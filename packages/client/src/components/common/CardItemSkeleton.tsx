@@ -1,7 +1,7 @@
 import { Skeleton } from '@material-ui/lab';
+import { makeStyles, Theme } from '@material-ui/core';
 
 import CardItem from './CardItem';
-import { makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,7 +1,7 @@
 import React from 'react';
+import { Container } from '@material-ui/core';
 
 import PageHeader from '../common/PageHeader';
-import { Container } from '@material-ui/core';
 
 const Pizzas: React.FC = () => {
   return (

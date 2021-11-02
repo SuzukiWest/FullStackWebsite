@@ -1,14 +1,13 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-
-import ToppingModal from './ToppingModal';
-
-import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import PageHeader from '../common/PageHeader';
-import ToppingItem from './ToppingItem';
-import { Topping } from '../../types';
 import { makeStyles } from '@material-ui/styles';
 import { Container, createStyles, List, ListItem, Theme } from '@material-ui/core';
+
+import { Topping } from '../../types';
+import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
+import PageHeader from '../common/PageHeader';
+import ToppingModal from './ToppingModal';
+import ToppingItem from './ToppingItem';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({

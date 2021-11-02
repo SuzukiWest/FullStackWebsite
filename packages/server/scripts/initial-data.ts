@@ -223,7 +223,7 @@ export const pizzas: SeedPizza[] = [
   {
     _id: deterministicId('BBQ Chicken'),
     name: 'BBQ Chicken',
-    description: "Straight from Jon''s BBQ & foot massage",
+    description: "Straight from Jones'' BBQ & foot massage",
     toppingIds: [ID.TomatoSauce, ID.BBQSauce, ID.Mozzarella, ID.Bacon, ID.Chicken],
     imgSrc:
       'https://images.unsplash.com/photo-1596458397260-255807e979f1?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjV8fGNoZWVzZSUyMHBpenphfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60',

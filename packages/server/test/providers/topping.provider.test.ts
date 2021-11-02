@@ -2,7 +2,7 @@ import { Collection } from 'mongodb';
 
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
-import { mockToArray, mockSortToArray } from '../helpers/mongo.helper';
+import { mockSortToArray } from '../helpers/mongo.helper';
 import { createMockToppingDocument } from '../helpers/topping.helper';
 import { ToppingDocument, toToppingObject } from '../../src/entities/topping';
 
@@ -28,22 +28,6 @@ describe('toppingProvider', (): void => {
 
     test('should get all toppings', async () => {
       const result = await toppingProvider.getToppings();
-
-      expect(result).toEqual([mockTopping]);
-    });
-  });
-  describe('getToppingsByIds', (): void => {
-    beforeEach(() => {
-      reveal(stubToppingCollection).find.mockImplementation(mockToArray([mockToppingDocument]));
-    });
-    test('should call find once', async () => {
-      await toppingProvider.getToppingsByIds([mockTopping.id]);
-
-      expect(stubToppingCollection.find).toHaveBeenCalledTimes(1);
-    });
-
-    test('should return an array of toppings', async () => {
-      const result = await toppingProvider.getToppingsByIds([mockTopping.id]);
 
       expect(result).toEqual([mockTopping]);
     });
