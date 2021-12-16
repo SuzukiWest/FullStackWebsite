@@ -29,7 +29,7 @@ jobs:
         run: yarn format:check
       - name: Lint
         run: yarn lint
-      - name: Test Client
-        run: 'cd packages/server && yarn test'
       - name: Test Server
+        run: 'cd packages/server && yarn test'
+      - name: Test Client
         run: 'cd packages/client && yarn test'
