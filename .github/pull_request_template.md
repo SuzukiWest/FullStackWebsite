@@ -8,6 +8,7 @@
 
 ### Checklist
 
+- [ ] Does the name of your PR follow the following format: <valid jira task ID> <jira task number> <jira task title>
+- [ ] Does the name of your branch follow the following format: <valid jira task ID> <jira task number> <jira task title>
 - [ ] Have you manually tested your PR locally?
-- [ ] Have you written thorough tests for your work?
-- [ ] Have you renamed this PR so it starts with the JIRA ticket ID, so this PR will show up in your JIRA ticket?
+- [ ] Did the github actions on your branch all succeed?
