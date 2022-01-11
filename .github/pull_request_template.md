@@ -1,6 +1,6 @@
 ## Summary of changes
 
-> Add a list of changes
+> Add a list of the changes you made
 
 ### Screenshots
 
