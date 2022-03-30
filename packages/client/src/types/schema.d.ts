@@ -11,7 +11,6 @@ export type Scalars = {
   Float: number;
   Long: any;
   ObjectID: any;
-  null: any;
 };
 
 export type CreateToppingInput = {
@@ -48,7 +47,7 @@ export type Pizza = {
   description: Scalars['String'];
   id: Scalars['ObjectID'];
   name: Scalars['String'];
-  toppingIds?: Maybe<Array<Scalars['String']>>;
+  toppingIds: Array<Scalars['String']>;
 };
 
 export type Query = {
