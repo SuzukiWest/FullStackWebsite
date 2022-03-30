@@ -11,6 +11,7 @@ export type Scalars = {
   Float: number;
   Long: any;
   ObjectID: any;
+  null: any;
 };
 
 export type CreateToppingInput = {
@@ -41,8 +42,18 @@ export type MutationUpdateToppingArgs = {
   input: UpdateToppingInput;
 };
 
+export type Pizza = {
+  __typename?: 'Pizza';
+  ImgSrc: Scalars['String'];
+  description: Scalars['String'];
+  id: Scalars['ObjectID'];
+  name: Scalars['String'];
+  toppingIds?: Maybe<Array<Scalars['String']>>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  pizzas: Array<Pizza>;
   toppings: Array<Topping>;
 };
 
