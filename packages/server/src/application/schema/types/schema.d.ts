@@ -51,6 +51,11 @@ export type Pizza = {
   toppings?: Maybe<Array<Topping>>;
 };
 
+export type PizzaQuery = {
+  __typename?: 'PizzaQuery';
+  toppingIds: Array<Topping>;
+};
+
 export type PizzaQueryArgs = {
   id: Scalars['ObjectID'];
 };
