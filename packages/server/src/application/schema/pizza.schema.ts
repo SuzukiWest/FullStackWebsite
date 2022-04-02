@@ -7,7 +7,7 @@ const typeDefs = gql`
     description: String!
     ImgSrc: String!
     toppingIds: [ObjectID!]!
-    toppings: [Topping!]!
+    toppings: [Topping!]
   }
 
   type Query {

@@ -48,7 +48,7 @@ export type Pizza = {
   id: Scalars['ObjectID'];
   name: Scalars['String'];
   toppingIds: Array<Scalars['ObjectID']>;
-  toppings: Array<Topping>;
+  toppings?: Maybe<Array<Topping>>;
 };
 
 export type PizzaQueryArgs = {
