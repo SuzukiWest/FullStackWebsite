@@ -5,12 +5,17 @@ const typeDefs = gql`
     id: ObjectID!
     name: String!
     description: String!
-    toppingIds: [Topping!]!
     ImgSrc: String!
+    toppingIds: [ObjectID!]!
+    toppings: [Topping!]!
   }
 
   type Query {
     pizzas: [Pizza!]!
+  }
+
+  input PizzaQueryArgs {
+    id: ObjectID!
   }
 `;
 
