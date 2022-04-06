@@ -7,7 +7,6 @@ export const GET_PIZZA = gql`
       name
       description
       ImgSrc
-      toppingIds
     }
   }
 `;

@@ -1,16 +1,5 @@
 import React from 'react';
-import { AddCircle, Delete } from '@material-ui/icons';
-import {
-  Backdrop,
-  createStyles,
-  Fade,
-  IconButton,
-  makeStyles,
-  Modal,
-  Paper,
-  TextField,
-  Theme,
-} from '@material-ui/core';
+import { Backdrop, createStyles, Fade, makeStyles, Modal, Paper, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +29,7 @@ interface PizzaModalProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PizzaModal = ({ selectedPizza, setSelectedPizza, open, setOpen }: PizzaModalProps): JSX.Element => {
+const PizzaModal = ({ open, setOpen }: PizzaModalProps): JSX.Element => {
   const classes = useStyles();
 
   return (

@@ -7,7 +7,10 @@ const GET_PIZZAS = gql`
       name
       description
       ImgSrc
-      toppingIds
+      toppings {
+        id
+        name
+      }
     }
   }
 `;
