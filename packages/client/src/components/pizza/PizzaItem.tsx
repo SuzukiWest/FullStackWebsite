@@ -1,4 +1,4 @@
-import { IconButton, ImageListItem, ListItem, Theme } from '@material-ui/core';
+import { ImageListItem, ListItem, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import CardItem from '../common/CardItem';
