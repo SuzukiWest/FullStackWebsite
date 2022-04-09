@@ -28,16 +28,14 @@ const useStyles = makeStyles(({ typography }: Theme) => ({
 
 export interface PizzaItemProps {
   pizza?: Pizza;
-  handleOpen: (pizza?: Pizza) => void;
 }
 
-const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, handleOpen, ...props }) => {
+const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
   const classes = useStyles();
 
   const listToppings = pizza?.toppings.map((topping: Topping) => (
     <ListItem key={topping.id.toString()} value={topping.id}>
-      {' '}
-      {topping.name}{' '}
+      {topping.name}
     </ListItem>
   ));
 
