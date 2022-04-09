@@ -1,9 +1,11 @@
-import { ObjectId } from 'mongodb';
+import { Topping } from 'src/application/schema/types/schema';
 
-export interface Pizza {
+interface _Pizza {
   id: string;
   name: string;
   description: string;
   ImgSrc: string;
-  toppingIds: [ObjectId];
+  toppings: Topping[];
 }
+
+export type Pizza = Omit<_Pizza, 'toppings'> & { toppingIds: string[] };

@@ -1,7 +1,7 @@
 import { Document } from 'mongodb';
 import { Pizza } from '../application/providers/pizzas/pizza.provider.types';
 
-interface PizzaDocument extends Document, Omit<Pizza, 'id' | 'toppings'> {}
+interface PizzaDocument extends Document, Omit<Pizza, 'id'> {}
 
 const toPizzaObject = (pizza: PizzaDocument): Pizza => {
   return {

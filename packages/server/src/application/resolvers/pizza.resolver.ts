@@ -1,4 +1,4 @@
-import { Pizza } from '../schema/types/schema';
+import { Pizza } from '../providers/pizzas/pizza.provider.types';
 import { pizzaProvider } from '../providers';
 
 const pizzaResolver = {

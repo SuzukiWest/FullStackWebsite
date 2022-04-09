@@ -47,17 +47,7 @@ export type Pizza = {
   description: Scalars['String'];
   id: Scalars['ObjectID'];
   name: Scalars['String'];
-  toppingIds: Array<Scalars['ObjectID']>;
-  toppings?: Maybe<Array<Topping>>;
-};
-
-export type PizzaQuery = {
-  __typename?: 'PizzaQuery';
-  toppingIds: Array<Topping>;
-};
-
-export type PizzaQueryArgs = {
-  id: Scalars['ObjectID'];
+  toppings: Array<Topping>;
 };
 
 export type Query = {

@@ -10,9 +10,6 @@ const typeDefs = gql`
   type Query {
     toppings: [Topping!]!
   }
-  type PizzaQuery {
-    toppingIds: [Topping!]!
-  }
 
   input ToppingQueryArgs {
     id: ObjectID!
