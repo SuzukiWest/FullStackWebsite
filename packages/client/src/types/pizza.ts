@@ -5,9 +5,5 @@ export interface Pizza {
   name: string;
   description: string;
   ImgSrc: string;
-<<<<<<< HEAD
   toppings: Topping[];
-=======
-  toppings: [Topping];
->>>>>>> alter toppings!]!
 }

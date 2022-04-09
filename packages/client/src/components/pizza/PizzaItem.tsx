@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 import { ImageListItem, ListItem, ListItemText } from '@material-ui/core';
-=======
-import { ImageListItem, ListItem, Theme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-
->>>>>>> alter toppings!]!
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
