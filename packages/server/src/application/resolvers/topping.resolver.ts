@@ -6,12 +6,19 @@ import { ObjectId } from 'mongodb';
 const toppingResolver = {
   Query: {
     toppings: async (): Promise<Topping[]> => {
-      return toppingProvider.getToppings();
+      const toppings = await toppingProvider.getToppings();
+      return toppings;
     },
   },
+
   Pizza: {
     toppings: async (pizza: { toppingIds: ObjectId[] }): Promise<Topping[]> => {
       return await toppingProvider.getToppingsByIds(pizza.toppingIds);
+    },
+    priceCents: async (pizza: { toppingIds: ObjectId[] }): Promise<number> => {
+      const toppings = await toppingProvider.getToppingsByIds(pizza.toppingIds);
+      const priceCents = await toppingProvider.getPriceCents(toppings);
+      return priceCents;
     },
   },
 

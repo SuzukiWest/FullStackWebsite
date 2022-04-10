@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 const GET_PIZZAS = gql`
   query Pizzas {
     pizzas {
+      priceCents
       id
       name
       description
@@ -10,6 +11,7 @@ const GET_PIZZAS = gql`
       toppings {
         id
         name
+        priceCents
       }
     }
   }

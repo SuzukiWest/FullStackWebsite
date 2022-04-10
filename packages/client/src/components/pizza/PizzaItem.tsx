@@ -2,6 +2,7 @@ import { ImageListItem, ListItem, ListItemText } from '@material-ui/core';
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
+import toDollars from '../../lib/format-dollars';
 
 export interface PizzaItemProps {
   pizza?: Pizza;
