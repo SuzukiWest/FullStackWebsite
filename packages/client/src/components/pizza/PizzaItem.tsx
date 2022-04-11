@@ -12,7 +12,7 @@ const useStyles = makeStyles(({ typography }: Theme) => ({
   skeleton: {
     display: 'flex',
     justifyContent: 'center',
-    verticalAlign: 'center',
+    horizontalAlign: 'center',
   },
   header: {
     display: 'flex',
@@ -56,7 +56,7 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
           </ListItem>
 
           <ImageListItem key={'pizza-ImgSrc-${pizza?.ImgSrc}'}>
-            <img src={pizza?.ImgSrc} alt={'No Image'} />
+            <img src={pizza?.ImgSrc} alt={'No Image'} width="50%" height="25%" />
           </ImageListItem>
         </List>
       </CardItem>

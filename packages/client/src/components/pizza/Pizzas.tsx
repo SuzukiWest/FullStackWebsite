@@ -36,12 +36,13 @@ const Pizzas: React.FC = () => {
   const { loading, data, error } = useQuery(GET_PIZZAS);
 
   if (error) {
-    console.log('error');
+    <div className={classes.container}>
+      <h1>"Error Loading Pizzas Page"</h1>
+    </div>;
   }
   if (loading) {
     return (
       <div className={classes.container}>
-        {' '}
         <CardItemSkeleton data-testid={'pizza-list-loading'} />
       </div>
     );
