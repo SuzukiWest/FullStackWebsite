@@ -1,4 +1,4 @@
-import { ImageListItem, ListItem, Theme } from '@material-ui/core';
+import { ImageListItem, ListItem, ListItemText, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import CardItem from '../common/CardItem';
@@ -40,26 +40,27 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
   ));
 
   return (
-    <CardItem {...props}>
-      <List>
-        <ListItem data-testid={`pizza-name-${pizza?.name}`}>
-          <h3>{pizza?.name} Pizza</h3>
-        </ListItem>
+    <nav aria-label="pizzas">
+      <CardItem {...props}>
+        <List>
+          <ListItem key={`pizza-name-${pizza?.name}`}>
+            <ListItemText primary="{pizza?.name} Pizza" />
+          </ListItem>
 
-        <ListItem data-testid={`pizza-description-${pizza?.description}`}>
-          <p>Description: {pizza?.description}</p>
-        </ListItem>
+          <ListItem key={`pizza-description-${pizza?.description}`}>
+            <ListItemText primary="Description: {pizza?.description}" />
+          </ListItem>
 
-        <ListItem data-testid={`pizza-toppings-${pizza?.id}`}>
-          <h4>Toppings</h4>
-          <List>{listToppings}</List>
-        </ListItem>
+          <ListItem key={'pizza-toppings-${pizza?.id}'}>
+            <ListItemText primary="Toppings" secondary={listToppings} />
+          </ListItem>
 
-        <ImageListItem data-testid={`pizza-ImgSrc-${pizza?.ImgSrc}`}>
-          <img src={pizza?.ImgSrc} className={classes.container} />
-        </ImageListItem>
-      </List>
-    </CardItem>
+          <ImageListItem key={'pizza-ImgSrc-${pizza?.ImgSrc}'}>
+            <img src={pizza?.ImgSrc} alt={'No Image'} />
+          </ImageListItem>
+        </List>
+      </CardItem>
+    </nav>
   );
 };
 
