@@ -44,11 +44,11 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
       <CardItem {...props}>
         <List>
           <ListItem key={`pizza-name-${pizza?.name}`}>
-            <ListItemText primary="{pizza?.name} Pizza" />
+            <ListItemText primary={pizza?.name + ' Pizza'} />
           </ListItem>
 
           <ListItem key={`pizza-description-${pizza?.description}`}>
-            <ListItemText primary="Description: {pizza?.description}" />
+            <ListItemText primary={'Description:' + pizza?.description} />
           </ListItem>
 
           <ListItem key={'pizza-toppings-${pizza?.id}'}>
