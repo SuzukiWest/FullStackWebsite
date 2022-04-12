@@ -1,11 +1,17 @@
 import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';
 import { Root } from '../schema/types/types';
 import { toppingProvider } from '../providers';
+import { ObjectId } from 'mongodb';
 
 const toppingResolver = {
   Query: {
     toppings: async (): Promise<Topping[]> => {
       return toppingProvider.getToppings();
+    },
+  },
+  Pizza: {
+    toppings: async (pizza: { toppingIds: ObjectId[] }): Promise<Topping[]> => {
+      return await toppingProvider.getToppingsByIds(pizza.toppingIds);
     },
   },
 

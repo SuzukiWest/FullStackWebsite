@@ -11,6 +11,11 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
+  public async getToppingsByIds(ids: ObjectId[]): Promise<Topping[]> {
+    const toppings = await this.collection.find({ _id: { $in: ids } }).toArray();
+    return toppings.map(toToppingObject);
+  }
+
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },

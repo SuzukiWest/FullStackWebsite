@@ -47,7 +47,7 @@ export type Pizza = {
   description: Scalars['String'];
   id: Scalars['ObjectID'];
   name: Scalars['String'];
-  toppingIds: Array<Scalars['String']>;
+  toppings: Array<Topping>;
 };
 
 export type Query = {
