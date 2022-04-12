@@ -1,40 +1,15 @@
-import { ImageListItem, ListItem, ListItemText, Theme } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-
+import { ImageListItem, ListItem, ListItemText } from '@material-ui/core';
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
-
-const useStyles = makeStyles(({ typography }: Theme) => ({
-  container: {
-    display: 'flex',
-  },
-  skeleton: {
-    display: 'flex',
-    justifyContent: 'center',
-    horizontalAlign: 'center',
-  },
-  header: {
-    display: 'flex',
-  },
-  name: {
-    minWidth: typography.pxToRem(500),
-  },
-  content: {
-    display: 'flex',
-    justifyContent: 'left',
-  },
-}));
 
 export interface PizzaItemProps {
   pizza?: Pizza;
 }
 
 const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
-  const classes = useStyles();
-
   const listToppings = pizza?.toppings.map((topping: Topping) => (
-    <ListItem key={topping.id.toString()} value={topping.id}>
+    <ListItem key={topping.id.toString()} value={topping.name}>
       {topping.name}
     </ListItem>
   ));
