@@ -27,6 +27,10 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
             <ListItemText primary={'Description:' + pizza?.description} />
           </ListItem>
 
+          <ListItem>
+            <h4>Price: {pizza?.priceCents ? toDollars(pizza.priceCents) : ''}</h4>
+          </ListItem>
+
           <ListItem key={'pizza-toppings-${pizza?.id}'}>
             <ListItemText primary="Toppings" secondary={listToppings} />
           </ListItem>

@@ -6,4 +6,5 @@ export interface Pizza {
   description: string;
   ImgSrc: string;
   toppings: Topping[];
+  priceCents: number;
 }
