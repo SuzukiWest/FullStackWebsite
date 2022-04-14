@@ -17,8 +17,7 @@ class ToppingProvider {
   }
 
   public async getPriceCents(toppings: Topping[]): Promise<number> {
-    const priceCents = toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
-    return priceCents;
+    return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
   }
 
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
