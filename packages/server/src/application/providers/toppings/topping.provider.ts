@@ -16,7 +16,8 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
-  public async getPriceCents(toppings: Topping[]): Promise<number> {
+  public async getPriceCents(toppingIds: ObjectId[]): Promise<number> {
+    const toppings = await this.getToppingsByIds(toppingIds);
     const priceCents = toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
     return priceCents;
   }

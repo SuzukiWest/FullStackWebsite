@@ -18,10 +18,10 @@ export interface CreatePizzaInput {
 
 export interface UpdatePizzaInput {
   id: string;
-  name?: string;
-  description?: string;
-  ImgSrc?: string;
-  toppingIds?: string[];
+  name?: string | null;
+  description?: string | null;
+  ImgSrc?: string | null;
+  toppingIds?: string[] | null;
 }
 
 export type Pizza = Omit<_Pizza, 'toppings' | 'priceCents'> & { toppingIds: ObjectId[] };
