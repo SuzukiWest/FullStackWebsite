@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 export interface _Pizza {
   id: string;
   name: string;
@@ -7,4 +9,19 @@ export interface _Pizza {
   priceCents: number;
 }
 
-export type Pizza = Omit<_Pizza, 'toppings' | 'priceCents'> & { toppingIds: string[] };
+export interface CreatePizzaInput {
+  name: string;
+  description: string;
+  ImgSrc: string;
+  toppingIds: string[];
+}
+
+export interface UpdatePizzaInput {
+  id: string;
+  name?: string;
+  description?: string;
+  ImgSrc?: string;
+  toppingIds?: string[];
+}
+
+export type Pizza = Omit<_Pizza, 'toppings' | 'priceCents'> & { toppingIds: ObjectId[] };
