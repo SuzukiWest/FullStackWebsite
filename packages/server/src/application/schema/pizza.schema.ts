@@ -13,6 +13,35 @@ const typeDefs = gql`
   type Query {
     pizzas: [Pizza!]!
   }
+
+  type Mutation {
+    createPizza(input: CreatePizzaInput!): Pizza!
+    deletePizza(input: DeletePizzaInput!): ObjectID!
+    updatePizza(input: UpdatePizzaInput!): Pizza!
+  }
+
+  input PizzaQueryArgs {
+    id: ObjectID!
+  }
+
+  input CreatePizzaInput {
+    name: String!
+    description: String!
+    ImgSrc: String!
+    toppingIds: [ObjectID!]!
+  }
+
+  input DeletePizzaInput {
+    id: ObjectID!
+  }
+
+  input UpdatePizzaInput {
+    id: ObjectID!
+    name: String
+    description: String
+    ImgSrc: String
+    toppingIds: [ObjectID!]
+  }
 `;
 
 export { typeDefs };
