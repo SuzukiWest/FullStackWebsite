@@ -15,6 +15,8 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
     </ListItem>
   ));
 
+  const pizzaPrice = pizza?.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
+
   return (
     <nav aria-label="pizzas">
       <CardItem {...props}>
@@ -28,7 +30,7 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
           </ListItem>
 
           <ListItem>
-            <h4>Price: {pizza?.priceCents ? toDollars(pizza.priceCents) : ''}</h4>
+            <h4>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
           </ListItem>
 
           <ListItem key={'pizza-toppings-${pizza?.id}'}>
