@@ -9,13 +9,14 @@ class PizzaProvider {
 
   //FIX IMGSRC NOT WORKING - TYPE MISMATCH?
   public async getPizzas(): Promise<Pizza[]> {
-    const pizzas = await this.collection.find().toArray();
+    const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
   }
 
   public async createPizza(input: CreatePizzaInput): Promise<Pizza> {
     const { name, description, ImgSrc, toppingIds } = input;
-    validateStringInputs([name, description, ImgSrc]);
+    const strInp = [name, description, ImgSrc];
+    if (strInp) validateStringInputs(strInp);
 
     const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
     if (toppingIDs) toppingProvider.validateToppings(toppingIDs);

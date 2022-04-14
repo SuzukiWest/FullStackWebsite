@@ -11,7 +11,6 @@ export type Scalars = {
   Float: number;
   Long: any;
   ObjectID: any;
-  URL: any;
 };
 
 export type CreatePizzaInput = {
