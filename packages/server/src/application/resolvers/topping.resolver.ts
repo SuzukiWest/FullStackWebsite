@@ -6,8 +6,7 @@ import { ObjectId } from 'mongodb';
 const toppingResolver = {
   Query: {
     toppings: async (): Promise<Topping[]> => {
-      const toppings = await toppingProvider.getToppings();
-      return toppings;
+      return toppingProvider.getToppings();
     },
   },
 
