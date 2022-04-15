@@ -1,5 +1,5 @@
-import { CreatePizzaInput, DeletePizzaInput } from '../schema/types/schema';
-import { Pizza, UpdatePizzaInput } from '../providers/pizzas/pizza.provider.types';
+import { CreatePizzaInput, DeletePizzaInput, UpdatePizzaInput } from '../schema/types/schema';
+import { Pizza } from '../providers/pizzas/pizza.provider.types';
 import { pizzaProvider } from '../providers';
 import { Root } from '../schema/types/types';
 
