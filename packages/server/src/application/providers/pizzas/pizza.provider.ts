@@ -7,7 +7,6 @@ import validateStringInputs from '../../../lib/string-validator';
 class PizzaProvider {
   constructor(private collection: Collection<PizzaDocument>) {}
 
-  //FIX IMGSRC NOT WORKING - TYPE MISMATCH?
   public async getPizzas(): Promise<Pizza[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
@@ -26,7 +25,8 @@ class PizzaProvider {
       {
         $set: {
           ...input,
-          toppingIds: toppingIDs,
+          ...{ imgSrc: ImgSrc },
+          ...{ toppingIds: toppingIDs },
           updatedAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
         },
@@ -58,24 +58,28 @@ class PizzaProvider {
     return id;
   }
 
+  //CONFIRM THIS APPENDS TOPPINGS TO LIST OF EXISTINGs
   public async updatePizza(input: UpdatePizzaInput): Promise<Pizza> {
     const { id, name, description, ImgSrc, toppingIds } = input;
     const strInp = [name, description, ImgSrc];
     if (!strInp) validateStringInputs(strInp);
 
+    //Confirm toppings exist if input
+    let toppingIDs: ObjectId[] = [];
     if (toppingIds) {
-      const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
+      toppingIds!.map((topping) => new ObjectId(topping));
       toppingProvider.validateToppings(toppingIDs);
     }
+
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-
       {
         $set: {
           ...(name && { name: name }),
           ...(description && { description: description }),
-          ...(ImgSrc && { ImgSrc: ImgSrc }),
+          ...(ImgSrc && { imgSrc: ImgSrc }),
         },
+        //(toppingIds && {$addToSet: {toppingIds: toppingIDs}}),
       },
       { returnDocument: 'after' }
     );

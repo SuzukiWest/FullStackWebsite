@@ -8,7 +8,7 @@ const toPizzaObject = (pizza: PizzaDocument): Pizza => {
     id: pizza._id.toHexString(),
     name: pizza.name,
     description: pizza.description,
-    ImgSrc: pizza.ImgSrc,
+    ImgSrc: pizza.imgSrc,
     toppingIds: pizza.toppingIds,
   };
 };
