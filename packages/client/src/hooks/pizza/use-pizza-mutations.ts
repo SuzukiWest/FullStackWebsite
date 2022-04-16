@@ -12,7 +12,7 @@ interface UsePizzaMutationsOutput {
   //onDeletePizza: (selectedPizza: any) => Promise<void>;
 }
 
-const usePizzaMutations = (): UsePizzaMutationsOutput => {
+const usePizzaMutations = (): void => {
   const [createPizza] = useMutation(CREATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
 
   const onCreatePizza = useCallback(
