@@ -1,257 +1,272 @@
-<<<<<<< HEAD
-//Helper mock functions
-import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument, createMockTopping } from '../helpers/pizza.helper';
-import { reveal, stub } from 'jest-auto-stub';
+import { gql } from 'apollo-server-core';
+import { toppingResolver } from '../../src/application/resolvers/topping.resolver';
+import { typeDefs } from '../../src/application/schema';
+import {
+  MutationCreatePizzaArgs,
+  MutationDeletePizzaArgs,
+  MutationUpdatePizzaArgs,
+} from '../../src/application/schema/types/schema';
+import { TestClient } from '../helpers/client.helper';
+import { createMockPizza, createMockPizzaInp, createMockTopping } from '../helpers/pizza.helper';
+import { pizzaResolver } from '../../src/application/resolvers/pizza.resolver';
+import { toppingProvider, pizzaProvider } from '../../src/application/providers';
 
-//Provider/Type imports
-import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
-import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
-import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
-import { Collection } from 'mongodb';
-=======
-import { Collection } from 'mongodb';
+let client: TestClient;
 
-import { reveal, stub } from 'jest-auto-stub';
-import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
-import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument } from 'test/helpers/pizza.helper';
-import { PizzaDocument, toPizzaObject } from 'src/entities/pizza';
-import { PizzaProvider } from 'src/application/providers/pizzas/pizza.provider';
->>>>>>> provider finished and half of resolver
+jest.mock('../../src/application/database', () => ({
+  setupDb: (): any => ({ collection: (): any => jest.fn() }),
+}));
 
-const stubPizzaCollection = stub<Collection<PizzaDocument>>();
-const stubToppingProvider = stub<ToppingProvider>();
+const mockTopping = createMockTopping();
+const mockPizzaInp = createMockPizzaInp({ toppingIds: [mockTopping.id] });
+const mockPizza = createMockPizza({
+  ...mockPizzaInp,
+  toppings: [mockTopping],
+  priceCents: mockTopping.priceCents,
+});
 
-const pizzaProvider = new PizzaProvider(stubPizzaCollection, stubToppingProvider);
+beforeAll(async (): Promise<void> => {
+  client = new TestClient(typeDefs, [pizzaResolver, toppingResolver]);
+});
 
-beforeEach(jest.clearAllMocks);
+beforeEach(async (): Promise<void> => {
+  jest.restoreAllMocks();
+});
 
-<<<<<<< HEAD
-//Test Pizza Provider
-describe('pizzaProvider', (): void => {
-  const mockTopping = createMockTopping();
-  const mockPizzaDocument = createMockPizzaDocument({ toppingIds: [mockTopping.id] });
-  const mockPizza = toPizzaObject(mockPizzaDocument);
-  //Test Pizzas Query
-=======
-//Test Pizzas Query
-describe('pizzaProvider', (): void => {
-  const mockPizzaDocument = createMockPizzaDocument();
-  const mockPizza = toPizzaObject(mockPizzaDocument);
->>>>>>> provider finished and half of resolver
+describe('pizzaResolver', (): void => {
+  describe('Query', () => {
+    describe('pizzas', () => {
+      const query = gql`
+        query getPizzas {
+          pizzas {
+            id
+            name
+            description
+            imgSrc
+            toppings {
+              id
+              name
+              priceCents
+            }
+            priceCents
+          }
+        }
+      `;
 
-  describe('getPizzas', (): void => {
-    beforeEach(() => {
-      reveal(stubPizzaCollection).find.mockImplementation(mockSortToArray([mockPizzaDocument]));
-    });
+      describe('should get all pizzas', () => {
+        beforeEach(async (): Promise<void> => {
+          jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(mockPizza.priceCents);
+          jest.spyOn(pizzaProvider, 'getPizzas').mockResolvedValue([mockPizzaInp]);
+          jest.spyOn(toppingProvider, 'getToppingsByIds').mockResolvedValue(mockPizza.toppings);
+        });
+        test('should getPizzas', async () => {
+          //resolvers run here
+          const result = await client.query({ query });
 
-    test('should call find once', async () => {
-      await pizzaProvider.getPizzas();
+          expect(result.data).toEqual({
+            pizzas: [
+              {
+                __typename: 'Pizza',
+                id: mockPizza.id,
+                name: mockPizza.name,
+                description: mockPizza.description,
+                imgSrc: mockPizza.imgSrc,
+                toppings: mockPizza.toppings,
+                priceCents: mockPizza.priceCents,
+              },
+            ],
+          });
+        });
 
-      expect(stubPizzaCollection.find).toHaveBeenCalledTimes(1);
-    });
+        test('should call each function once', async () => {
+          await client.query({ query });
 
-<<<<<<< HEAD
-    test('should get all pizzas', async () => {
-=======
-    test('should get all toppings', async () => {
->>>>>>> provider finished and half of resolver
-      const result = await pizzaProvider.getPizzas();
-
-      expect(result).toEqual([mockPizza]);
+          expect(pizzaProvider.getPizzas).toHaveBeenCalledTimes(1);
+          expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
+          expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
+        });
+      });
     });
   });
 
-<<<<<<< HEAD
-  //Test Create Pizza
-  describe('createPizza', (): void => {
-    const createPizza = createMockPizzaDocument({
-      name: 'create pizza',
-      description: 'create description',
-      imgSrc: 'create img',
-      toppingIds: [mockTopping.id],
-    });
-
-    beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: createPizza }));
-    });
-
-    test('should call helper find once', async () => {
-      await pizzaProvider.createPizza({
-        name: createPizza.name,
-        description: createPizza.description,
-        imgSrc: createPizza.imgSrc,
+  //Test Resolver Mutations
+  describe('Mutation', () => {
+    describe('createPizza', () => {
+      const mutation = gql`
+        mutation ($input: CreatePizzaInput!) {
+          createPizza(input: $input) {
+            name
+            description
+            imgSrc
+            toppings {
+              id
+              name
+              priceCents
+            }
+            priceCents
+          }
+        }
+      `;
+      const createdPizzaInp = createMockPizzaInp({
+        name: 'created pizza',
+        description: 'created description',
+        imgSrc: 'created img',
         toppingIds: [mockTopping.id],
       });
-
-      expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
-      expect(stubToppingProvider.validateToppings).toHaveBeenCalledTimes(1);
-=======
-  //Test Pizza Creation
-  describe('createPizza', (): void => {
-    const validPizza = createMockPizzaDocument({
-      name: 'test pizza',
-      description: 'description 1',
-      ImgSrc: 'img 1',
-      toppingIds: [],
-    }); //INPUT TOPPINGIDS
-
-    beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));
-    });
-
-    test('should call findOneAndUpdate once', async () => {
-      await pizzaProvider.createPizza({
-        name: validPizza.name,
-        description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()),
-      }); //WHERE TO ALTER TYPE FOR THIS
-
-      expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
->>>>>>> provider finished and half of resolver
-    });
-
-    test('should return a pizza when passed valid input', async () => {
-      const result = await pizzaProvider.createPizza({
-<<<<<<< HEAD
-        name: createPizza.name,
-        description: createPizza.description,
-        imgSrc: createPizza.imgSrc,
-        toppingIds: [mockTopping.id],
+      const createdPizza = createMockPizza({
+        id: createdPizzaInp.id,
+        name: createdPizzaInp.name,
+        description: createdPizzaInp.description,
+        imgSrc: createdPizzaInp.imgSrc,
+        toppings: [mockTopping],
+        priceCents: mockTopping.priceCents,
       });
 
-      expect(result).toEqual(toPizzaObject(createPizza));
-    });
-  });
-
-  //Test Delete Pizza
-=======
-        name: validPizza.name,
-        description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
+      beforeEach(() => {
+        jest.spyOn(pizzaProvider, 'createPizza').mockResolvedValue(createdPizzaInp);
+        jest.spyOn(toppingProvider, 'getToppingsByIds').mockResolvedValue(createdPizza.toppings);
+        jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(createdPizza.priceCents);
+        jest.spyOn(toppingProvider, 'validateToppings');
       });
 
-      expect(result).toEqual(toPizzaObject(validPizza));
-    });
-  });
+      const variables: MutationCreatePizzaArgs = {
+        input: {
+          name: createdPizzaInp.name,
+          description: createdPizzaInp.description,
+          imgSrc: createdPizzaInp.imgSrc,
+          toppingIds: createdPizzaInp.toppingIds,
+        },
+      };
+      test('should call create pizza when passed valid input', async () => {
+        const result = await client.mutate({ mutation, variables });
 
-  //Test Pizza Deletion
->>>>>>> provider finished and half of resolver
-  describe('delete Pizza', (): void => {
-    beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndDelete.mockImplementation(() => ({ value: mockPizzaDocument }));
-    });
-
-    test('should call findOneAndDelete once', async () => {
-<<<<<<< HEAD
-      await pizzaProvider.deletePizza(mockPizzaDocument.id);
-=======
-      await pizzaProvider.deletePizza(mockPizza.id);
->>>>>>> provider finished and half of resolver
-
-      expect(stubPizzaCollection.findOneAndDelete).toHaveBeenCalledTimes(1);
-    });
-
-    test('should throw an error if findOneAndDelete return null for value', async () => {
-      reveal(stubPizzaCollection).findOneAndDelete.mockImplementation(() => ({ value: null }));
-
-<<<<<<< HEAD
-      await expect(pizzaProvider.deletePizza(mockPizzaDocument.id)).rejects.toThrow(
-        new Error('Could not delete pizza')
-      );
-    });
-
-    test('should return an id', async () => {
-      const result = await pizzaProvider.deletePizza(mockPizzaDocument.id);
-
-      expect(result).toEqual(mockPizzaDocument.id);
-    });
-  });
-
-  //Test Update Pizza
-  describe('updatePizza', (): void => {
-    const updatedPizza = createMockPizzaDocument({
-      name: 'updated pizza',
-      description: 'updated description',
-      imgSrc: 'updated img',
-      toppingIds: [mockTopping.id],
-    });
-
-    beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: updatedPizza }));
-=======
-      await expect(pizzaProvider.deletePizza(mockPizza.id)).rejects.toThrow(new Error('Could not delete pizza'));
-    });
-
-    test('should return an id', async () => {
-      const result = await pizzaProvider.deletePizza(mockPizza.id);
-
-      expect(result).toEqual(mockPizza.id);
-    });
-  });
-
-  //Test Pizza Update
-  describe('updatePizza', (): void => {
-    const validPizza = createMockPizzaDocument({
-      name: 'test pizza',
-      description: 'description 1',
-      ImgSrc: 'img 1',
-      toppingIds: [],
-    }); //INPUT TOPPINGIDS
-
-    beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));
->>>>>>> provider finished and half of resolver
-    });
-
-    test('should call findOneAndUpdate once', async () => {
-      await pizzaProvider.updatePizza({
-<<<<<<< HEAD
-        id: updatedPizza.id,
-        name: updatedPizza.name,
-        description: updatedPizza.description,
-        imgSrc: updatedPizza.imgSrc,
-        toppingIds: updatedPizza.toppingIds,
+        expect(result.data).toEqual({
+          createPizza: {
+            __typename: 'Pizza',
+            name: createdPizza.name,
+            description: createdPizza.description,
+            imgSrc: createdPizza.imgSrc,
+            toppings: createdPizza.toppings,
+            priceCents: createdPizza.priceCents,
+          },
+        });
       });
 
-      expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
-      expect(stubToppingProvider.validateToppings).toHaveBeenCalledTimes(1);
-=======
-        id: validPizza.id,
-        name: validPizza.name,
-        description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
-      });
+      test('should call create pizza when passed valid input', async () => {
+        await client.mutate({ mutation, variables });
 
-      expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
->>>>>>> provider finished and half of resolver
+        expect(pizzaProvider.createPizza).toHaveBeenCalledTimes(1);
+        expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
+        expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
+        expect(pizzaProvider.createPizza).toHaveBeenCalledWith(variables.input);
+      });
     });
 
-    test('should return a pizza', async () => {
-      const result = await pizzaProvider.updatePizza({
-<<<<<<< HEAD
-        id: updatedPizza.id,
-        name: updatedPizza.name,
-        description: updatedPizza.description,
-        imgSrc: updatedPizza.imgSrc,
-        toppingIds: updatedPizza.toppingIds,
+    describe('deletePizza', () => {
+      const mutation = gql`
+        mutation ($input: DeletePizzaInput!) {
+          deletePizza(input: $input) {
+            id
+          }
+        }
+      `;
+
+      const variables: MutationDeletePizzaArgs = { input: { id: mockPizza.id } };
+
+      beforeEach(() => {
+        jest.spyOn(pizzaProvider, 'deletePizza').mockResolvedValue(mockPizza.id);
       });
 
-      expect(result).toEqual(toPizzaObject(updatedPizza));
-=======
-        id: validPizza.id,
-        name: validPizza.name,
-        description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
+      test('should call deletePizza using id', async () => {
+        await client.mutate({ mutation, variables });
+
+        expect(pizzaProvider.deletePizza).toHaveBeenCalledWith(variables.input.id);
       });
 
-      expect(result).toEqual(toPizzaObject(validPizza));
->>>>>>> provider finished and half of resolver
+      test('should return deleted topping id', async () => {
+        const result = await client.mutate({ mutation, variables });
+
+        expect(result.data).toEqual({
+          deletePizza: mockPizza.id,
+        });
+      });
+      test('should return deleted topping id', async () => {
+        const result = await client.mutate({ mutation, variables });
+
+        expect(result.data).toEqual({
+          deletePizza: mockPizza.id,
+        });
+      });
+
+      describe('updatePizza', () => {
+        const mutation = gql`
+          mutation ($input: UpdatePizzaInput!) {
+            updatePizza(input: $input) {
+              id
+              name
+              description
+              imgSrc
+              toppings {
+                id
+                name
+                priceCents
+              }
+              priceCents
+            }
+          }
+        `;
+
+        const mockTopping2 = createMockTopping({ name: 'topping2', priceCents: 5 });
+        const updatedPizzaInp = createMockPizzaInp({
+          name: 'updated pizza',
+          description: 'updated description',
+          imgSrc: 'updated Pizza',
+          toppingIds: [mockTopping2.id],
+        });
+        const updatedPizza = createMockPizza({
+          id: updatedPizzaInp.id,
+          name: updatedPizzaInp.name,
+          description: updatedPizzaInp.description,
+          imgSrc: updatedPizzaInp.imgSrc,
+          toppings: [mockTopping2],
+          priceCents: mockTopping2.priceCents,
+        });
+
+        const variables: MutationUpdatePizzaArgs = {
+          input: {
+            id: mockPizza.id,
+            name: updatedPizza.name,
+            imgSrc: updatedPizza.imgSrc,
+            description: updatedPizza.description,
+            toppingIds: updatedPizzaInp.toppingIds,
+          },
+        };
+
+        beforeEach(() => {
+          jest.spyOn(pizzaProvider, 'updatePizza').mockResolvedValue(updatedPizzaInp);
+          jest.spyOn(toppingProvider, 'getToppingsByIds').mockResolvedValue(updatedPizza.toppings);
+          jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(updatedPizza.priceCents);
+        });
+
+        test('should call updatePizza', async () => {
+          await client.mutate({ mutation, variables });
+
+          expect(pizzaProvider.updatePizza).toHaveBeenCalledTimes(1);
+          expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
+          expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
+          expect(pizzaProvider.updatePizza).toHaveBeenCalledWith(variables.input);
+        });
+
+        test('should return updated pizza', async () => {
+          const result = await client.mutate({ mutation, variables });
+
+          expect(result.data).toEqual({
+            updatePizza: {
+              ...updatedPizza,
+            },
+          });
+        });
+      });
     });
   });
 });
