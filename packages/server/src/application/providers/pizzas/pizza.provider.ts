@@ -1,14 +1,17 @@
 import { ObjectId, Collection } from 'mongodb';
 import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
 import { Pizza, CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
-import { toppingProvider } from '..';
 import validateStringInputs from '../../../lib/string-validator';
 import { ToppingProvider } from '../toppings/topping.provider';
+import { toppingProvider } from '..';
 
 class PizzaProvider {
-  constructor(private collection: Collection<PizzaDocument>, toppingProvider: ToppingProvider) {}
+  constructor(private collection: Collection<PizzaDocument>, private tP: ToppingProvider) {
+    if (this.tP === null) {
+      this.tP = toppingProvider;
+    }
+  }
 
-  //FIX IMGSRC NOT WORKING - TYPE MISMATCH?
   public async getPizzas(): Promise<Pizza[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
@@ -20,7 +23,7 @@ class PizzaProvider {
     if (strInp) validateStringInputs(strInp);
 
     const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
-    if (toppingIDs) toppingProvider.validateToppings(toppingIDs);
+    if (toppingIDs) this.tP.validateToppings(toppingIDs);
 
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },
@@ -66,7 +69,7 @@ class PizzaProvider {
 
     if (toppingIds) {
       const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
-      toppingProvider.validateToppings(toppingIDs);
+      this.tP.validateToppings(toppingIDs);
     }
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
