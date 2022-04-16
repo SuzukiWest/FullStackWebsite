@@ -12,6 +12,7 @@ interface UsePizzaMutationsOutput {
   //onDeletePizza: (selectedPizza: any) => Promise<void>;
 }
 
+<<<<<<< HEAD
 const usePizzaMutations = (): void => {
   const [createPizza] = useMutation(CREATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
   const [deletePizza] = useMutation(DELETE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
@@ -45,10 +46,26 @@ const usePizzaMutations = (): void => {
               description: selectedPizza?.description,
               imgSrc: selectedPizza?.imgSrc,
               toppingIds: selectedPizza?.toppingIds,
+=======
+const usePizzaMutations = (): UsePizzaMutationsOutput => {
+  const [createPizza] = useMutation(CREATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
+
+  const onCreatePizza = useCallback(
+    (selectedPizza) => {
+      try {
+        createPizza({
+          variables: {
+            createPizzaInput: {
+              name: selectedPizza.name,
+              description: selectedPizza.description,
+              ImgSrc: selectedPizza.ImgSrc,
+              toppingIds: selectedPizza.toppingIds,
+>>>>>>> 3.7.2
             },
           },
         });
       } catch (error) {
+<<<<<<< HEAD
         throw new Error('Update-Pizza input(client) not working');
       }
     },
@@ -72,4 +89,11 @@ const usePizzaMutations = (): void => {
     [deletePizza]
   );
   return { onCreatePizza, onDeletePizza, onUpdatePizza };
+=======
+        throw new Error('Create-Pizza (client) not working');
+      }
+    },
+    [createPizza]
+  );
+>>>>>>> 3.7.2
 };

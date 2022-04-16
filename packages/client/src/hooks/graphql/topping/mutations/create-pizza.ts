@@ -5,13 +5,8 @@ export const CREATE_PIZZA = gql`
     createPizza(input: $createPizzaInput) {
       name
       description
-      imgSrc
-      toppings {
-        id
-        name
-        priceCents
-      }
-      priceCents
+      ImgSrc
+      toppingIds
     }
   }
 `;
