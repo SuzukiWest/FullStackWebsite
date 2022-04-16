@@ -4,9 +4,10 @@ import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
 import { toppingProvider } from '..';
 import validateStringInputs from '../../../lib/string-validator';
 import { PizzaInp } from '../../../entities/pizza';
+import { ToppingProvider } from '../toppings/topping.provider';
 
 class PizzaProvider {
-  constructor(private collection: Collection<PizzaDocument>) {}
+  constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
 
   public async getPizzas(): Promise<PizzaInp[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
