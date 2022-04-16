@@ -3,9 +3,10 @@ import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
 import { Pizza, CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
 import { toppingProvider } from '..';
 import validateStringInputs from '../../../lib/string-validator';
+import { ToppingProvider } from '../toppings/topping.provider';
 
 class PizzaProvider {
-  constructor(private collection: Collection<PizzaDocument>) {}
+  constructor(private collection: Collection<PizzaDocument>, toppingProvider: ToppingProvider) {}
 
   //FIX IMGSRC NOT WORKING - TYPE MISMATCH?
   public async getPizzas(): Promise<Pizza[]> {
