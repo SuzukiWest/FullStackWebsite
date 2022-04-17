@@ -4,11 +4,14 @@ import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/styles';
 
 import { Pizza } from '../../types';
-import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 
 import PizzaItem from './PizzaItem';
+//import PizzaModal from './PizzaModal';
+//Import Queries
+import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
+import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -33,29 +36,53 @@ const useStyles = makeStyles(({ typography }: Theme) =>
 const Pizzas: React.FC = () => {
   const classes = useStyles();
 
-  const { loading, data, error } = useQuery(GET_PIZZAS);
+  //Open/close Modals
+  const [open, setOpen] = React.useState(false);
+  //Select Pizza Item to open/close
+  const [selectedPizza, setSelectedPizza] = React.useState<Partial<Pizza>>();
 
-  if (error) {
+  const { loading, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
+  const { data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
+
+  const selectPizza = (pizza?: Pizza): void => {
+    setSelectedPizza(pizza);
+    setOpen(true);
+  };
+
+  if (pizzaErr) {
     <div className={classes.container} key="Pizza load error">
-      <h1>"Error Loading Pizzas Page"</h1>
+      <h1>"Error Loading pizzaDat Page"</h1>
+    </div>;
+  } else if (toppingErr) {
+    <div className={classes.container} key="Pizza load error">
+      <h1>"Error Loading toppingDat for Pizzas Page"</h1>
     </div>;
   }
+
   if (loading) {
     return (
       <div className={classes.container} key="Pizza loading">
-        <CardItemSkeleton data-testid={'pizza-list-loading'} />
+        <CardItemSkeleton pizzaDat-testid={'pizza-list-loading'} />
       </div>
     );
   }
 
-  const PizzaList = data?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} />
+  const PizzaList = pizzaDat?.pizzaDat.map((pizza: Pizza) => (
+    <PizzaItem pizzaDat-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} selectPizza={selectPizza} />
   ));
 
   return (
     <Container maxWidth="md">
       <PageHeader pageHeader={'Pizza'} />
       <List>{PizzaList}</List>
+
+      {/*    <PizzaModal
+        selectedPizza={selectedPizza}
+        selectPizza={selectPizza}
+        open={open}
+        setOpen={setOpen}
+        allToppings={toppingDat}
+  /> */}
     </Container>
   );
 };
