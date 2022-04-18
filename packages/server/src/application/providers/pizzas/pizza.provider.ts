@@ -1,7 +1,6 @@
 import { ObjectId, Collection } from 'mongodb';
 import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
 import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
-import { toppingProvider } from '..';
 import validateStringInputs from '../../../lib/string-validator';
 import { PizzaInp } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
