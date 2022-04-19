@@ -1,18 +1,19 @@
 import { ObjectId, Collection } from 'mongodb';
 import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
-import { Pizza, CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
+import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
 import { toppingProvider } from '..';
 import validateStringInputs from '../../../lib/string-validator';
+import { PizzaInp } from '../../../entities/pizza';
 
 class PizzaProvider {
   constructor(private collection: Collection<PizzaDocument>) {}
 
-  public async getPizzas(): Promise<Pizza[]> {
+  public async getPizzas(): Promise<PizzaInp[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
   }
 
-  public async createPizza(input: CreatePizzaInput): Promise<Pizza> {
+  public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {
     const { name, description, ImgSrc, toppingIds } = input;
     const strInp = [name, description, ImgSrc];
     if (strInp) validateStringInputs(strInp);
@@ -35,8 +36,43 @@ class PizzaProvider {
     );
 
     if (!data.value) {
-      throw new Error(`Could not create the ${input.name} pizza`);
+      throw new Error('Could not create pizza');
     }
+
+    const pizza = data.value;
+
+    return toPizzaObject(pizza);
+  }
+
+  public async updatePizza(input: UpdatePizzaInput): Promise<PizzaInp> {
+    const { id, name, description, ImgSrc, toppingIds } = input;
+    const strInp = [name, description, ImgSrc];
+    if (!strInp) validateStringInputs(strInp);
+
+    //Confirm toppings exist if input
+    let toppingIDs: ObjectId[] = [];
+    if (toppingIds) {
+      toppingIDs = toppingIds!.map((topping) => new ObjectId(topping));
+      toppingProvider.validateToppings(toppingIDs);
+    }
+
+    const data = await this.collection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          ...(name && { name: name }),
+          ...(description && { description: description }),
+          ...(ImgSrc && { ImgSrc: ImgSrc }),
+          ...(toppingIDs && { toppingIds: toppingIDs }),
+        },
+      },
+      { returnDocument: 'after' }
+    );
+
+    if (!data.value) {
+      throw new Error('Could not update pizza');
+    }
+
     const pizza = data.value;
 
     return toPizzaObject(pizza);
@@ -56,40 +92,6 @@ class PizzaProvider {
     }
 
     return id;
-  }
-
-  //CONFIRM THIS APPENDS TOPPINGS TO LIST OF EXISTINGs
-  public async updatePizza(input: UpdatePizzaInput): Promise<Pizza> {
-    const { id, name, description, ImgSrc, toppingIds } = input;
-    const strInp = [name, description, ImgSrc];
-    if (!strInp) validateStringInputs(strInp);
-
-    //Confirm toppings exist if input
-    let toppingIDs: ObjectId[] = [];
-    if (toppingIds) {
-      toppingIds!.map((topping) => new ObjectId(topping));
-      toppingProvider.validateToppings(toppingIDs);
-    }
-
-    const data = await this.collection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          ...(name && { name: name }),
-          ...(description && { description: description }),
-          ...(ImgSrc && { imgSrc: ImgSrc }),
-        },
-        //(toppingIds && {$addToSet: {toppingIds: toppingIDs}}),
-      },
-      { returnDocument: 'after' }
-    );
-
-    if (!data.value) {
-      throw new Error(`Could not update the pizza ${name}`);
-    }
-    const pizza = data.value;
-
-    return toPizzaObject(pizza);
   }
 }
 
