@@ -2,6 +2,7 @@ import { ImageListItem, ListItem, ListItemText } from '@material-ui/core';
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
+import toDollars from '../../lib/format-dollars';
 
 export interface PizzaItemProps {
   pizza?: Pizza;
@@ -14,6 +15,8 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
     </ListItem>
   ));
 
+  const pizzaPrice = pizza?.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
+
   return (
     <nav aria-label="pizzas">
       <CardItem {...props}>
@@ -24,6 +27,10 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
 
           <ListItem key={`pizza-description-${pizza?.description}`}>
             <ListItemText primary={'Description:' + pizza?.description} />
+          </ListItem>
+
+          <ListItem>
+            <h4>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
           </ListItem>
 
           <ListItem key={'pizza-toppings-${pizza?.id}'}>

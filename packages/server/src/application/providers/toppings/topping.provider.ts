@@ -16,6 +16,10 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
+  public async getPriceCents(toppings: Topping[]): Promise<number> {
+    return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
+  }
+
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },

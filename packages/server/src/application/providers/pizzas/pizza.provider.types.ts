@@ -4,6 +4,7 @@ export interface _Pizza {
   description: string;
   ImgSrc: string;
   toppings: string[];
+  priceCents: number;
 }
 
-export type Pizza = Omit<_Pizza, 'toppings'> & { toppingIds: string[] };
+export type Pizza = Omit<_Pizza, 'toppings' | 'priceCents'> & { toppingIds: string[] };

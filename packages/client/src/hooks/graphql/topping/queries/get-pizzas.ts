@@ -10,6 +10,7 @@ const GET_PIZZAS = gql`
       toppings {
         id
         name
+        priceCents
       }
     }
   }
