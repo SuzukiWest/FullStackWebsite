@@ -50,10 +50,10 @@ class PizzaProvider {
     if (!strInp) validateStringInputs(strInp);
 
     //Confirm toppings exist if input
-    let toppingIDs: ObjectId[] = [];
+    let toppingObjectId: ObjectId[] = [];
     if (toppingIds) {
-      toppingIDs = toppingIds!.map((topping) => new ObjectId(topping));
-      toppingProvider.validateToppings(toppingIDs);
+      toppingObjectId = toppingIds!.map((topping) => new ObjectId(topping));
+      toppingProvider.validateToppings(toppingObjectId);
     }
 
     const data = await this.collection.findOneAndUpdate(
@@ -63,7 +63,7 @@ class PizzaProvider {
           ...(name && { name: name }),
           ...(description && { description: description }),
           ...(ImgSrc && { ImgSrc: ImgSrc }),
-          ...(toppingIDs && { toppingIds: toppingIDs }),
+          ...(toppingObjectId && { toppingIds: toppingObjectId }),
         },
       },
       { returnDocument: 'after' }
