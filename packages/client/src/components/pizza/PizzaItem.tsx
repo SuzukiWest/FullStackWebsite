@@ -7,6 +7,7 @@ import toDollars from '../../lib/format-dollars';
 export interface PizzaItemProps {
   pizza?: Pizza;
   selectPizza: (pizza?: any) => void;
+  onClick: (pizza?: any) => void;
 }
 
 const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, ...props }) => {
@@ -20,7 +21,7 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, ...props }) =
 
   return (
     <nav aria-label="pizzas">
-      <CardItem {...props} onClick={(): void => selectPizza(pizza)}>
+      <CardItem {...props}>
         <List>
           <ListItem key={`pizza-name-${pizza?.name}`}>
             <ListItemText primary={pizza?.name + ' Pizza'} />

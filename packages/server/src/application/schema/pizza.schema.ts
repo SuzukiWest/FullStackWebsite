@@ -20,10 +20,6 @@ const typeDefs = gql`
     updatePizza(input: UpdatePizzaInput!): Pizza!
   }
 
-  input PizzaQueryArgs {
-    id: ObjectID!
-  }
-
   input CreatePizzaInput {
     name: String!
     description: String!

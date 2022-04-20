@@ -67,8 +67,11 @@ const Pizzas: React.FC = () => {
     );
   }
 
-  const PizzaList = pizzaDat?.pizzaDat.map((pizza: Pizza) => (
-    <PizzaItem pizzaDat-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} selectPizza={selectPizza} />
+  const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
+    <PizzaItem pizzaDat-testid={`pizza-item-${pizza?.id}`}
+     key={pizza.id} pizza={pizza}
+     selectPizza={selectPizza}
+     onClick={(): void => selectPizza(pizza)}/>
   ));
 
   return (

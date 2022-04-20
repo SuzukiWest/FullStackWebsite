@@ -18,8 +18,7 @@ class ToppingProvider {
 
   public async getPriceCents(toppingIds: ObjectId[]): Promise<number> {
     const toppings = await this.getToppingsByIds(toppingIds);
-    const priceCents = toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
-    return priceCents;
+    return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
