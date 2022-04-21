@@ -9,11 +9,7 @@ const toPizzaObject = (pizza: PizzaDocument): PizzaInp => {
     id: pizza._id.toHexString(),
     name: pizza.name,
     description: pizza.description,
-<<<<<<< HEAD
     imgSrc: pizza.imgSrc,
-=======
-    ImgSrc: pizza.imgSrc,
->>>>>>> more update-pizza tweaks
     toppingIds: pizza.toppingIds,
   };
 };
