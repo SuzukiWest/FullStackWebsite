@@ -19,7 +19,7 @@ class PizzaProvider {
     if (strInp) validateStringInputs(strInp);
 
     const toppingObjectId = toppingIds.map((topping) => new ObjectId(topping));
-    if (toppingObjectId) toppingProvider.validateToppings(toppingObjectId);
+    if (toppingObjectId) this.toppingProvider.validateToppings(toppingObjectId);
 
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },
@@ -53,7 +53,7 @@ class PizzaProvider {
     let toppingObjectId: ObjectId[] = [];
     if (toppingIds) {
       toppingObjectId = toppingIds!.map((topping) => new ObjectId(topping));
-      toppingProvider.validateToppings(toppingObjectId);
+      this.toppingProvider.validateToppings(toppingObjectId);
     }
 
     const data = await this.collection.findOneAndUpdate(

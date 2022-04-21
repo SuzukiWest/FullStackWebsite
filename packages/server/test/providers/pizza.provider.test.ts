@@ -3,9 +3,11 @@ import { Collection } from 'mongodb';
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
 import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument } from 'test/helpers/pizza.helper';
-import { PizzaDocument, toPizzaObject } from 'src/entities/pizza';
-import { PizzaProvider } from 'src/application/providers/pizzas/pizza.provider';
+import { createMockPizzaDocument } from '../helpers/pizza.helper';
+import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
+import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
+import { ToppingDocument } from '../../src/entities/topping';
+import { createMockTopping } from '../helpers/topping.helper';
 
 const stubPizzaCollection = stub<Collection<PizzaDocument>>();
 const stubToppingProvider = stub<ToppingProvider>();
@@ -42,7 +44,7 @@ describe('pizzaProvider', (): void => {
     const validPizza = createMockPizzaDocument({
       name: 'test pizza',
       description: 'description 1',
-      ImgSrc: 'img 1',
+      imgSrc: 'img 1',
       toppingIds: [],
     }); //INPUT TOPPINGIDS
 
@@ -54,9 +56,9 @@ describe('pizzaProvider', (): void => {
       await pizzaProvider.createPizza({
         name: validPizza.name,
         description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()),
-      }); //WHERE TO ALTER TYPE FOR THIS
+        imgSrc: validPizza.imgSrc,
+        toppingIds: validPizza.toppingIds,
+      });
 
       expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
     });
@@ -65,8 +67,8 @@ describe('pizzaProvider', (): void => {
       const result = await pizzaProvider.createPizza({
         name: validPizza.name,
         description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
+        imgSrc: validPizza.imgSrc,
+        toppingIds: validPizza.toppingIds,
       });
 
       expect(result).toEqual(toPizzaObject(validPizza));
@@ -103,7 +105,7 @@ describe('pizzaProvider', (): void => {
     const validPizza = createMockPizzaDocument({
       name: 'test pizza',
       description: 'description 1',
-      ImgSrc: 'img 1',
+      imgSrc: 'img 1',
       toppingIds: [],
     }); //INPUT TOPPINGIDS
 
@@ -116,8 +118,8 @@ describe('pizzaProvider', (): void => {
         id: validPizza.id,
         name: validPizza.name,
         description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
+        imgSrc: validPizza.imgSrc,
+        toppingIds: validPizza.toppingIds,
       });
 
       expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
@@ -128,8 +130,8 @@ describe('pizzaProvider', (): void => {
         id: validPizza.id,
         name: validPizza.name,
         description: validPizza.description,
-        ImgSrc: validPizza.ImgSrc,
-        toppingIds: validPizza.toppingIds.map((topping) => topping.toString()), //WHERE TO ALTER TYPE FOR THIS
+        imgSrc: validPizza.imgSrc,
+        toppingIds: validPizza.toppingIds,
       });
 
       expect(result).toEqual(toPizzaObject(validPizza));

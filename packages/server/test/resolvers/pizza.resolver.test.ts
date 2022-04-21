@@ -36,7 +36,7 @@ describe('pizzaResolver', (): void => {
             id
             name
             description
-            ImgSrc
+            imgSrc
             toppings {
               id
               name
@@ -59,7 +59,7 @@ describe('pizzaResolver', (): void => {
               id: mockPizza.id,
               name: mockPizza.name,
               description: mockPizza.description,
-              imgSrc: mockPizza.ImgSrc,
+              imgSrc: mockPizza.imgSrc,
               toppings: mockPizza.toppings,
               priceCents: mockPizza.priceCents, //CHECK IF SUPPOSED TO CALL TOPPINGRESOLVER FOR THESE
             },
@@ -79,7 +79,7 @@ describe('pizzaResolver', (): void => {
           createPizza(input: $input) {
             name
             description
-            ImgSrc
+            imgSrc
             toppingIds
           }
         }
@@ -88,7 +88,7 @@ describe('pizzaResolver', (): void => {
       const validPizza = createMockPizza({
         name: 'test pizza',
         description: 'description 1',
-        ImgSrc: 'img 1',
+        imgSrc: 'img 1',
         toppings: [],
         priceCents: 250,
       }); //INPUT TOPPING OBJECTS
@@ -102,7 +102,7 @@ describe('pizzaResolver', (): void => {
           input: {
             name: validPizza.name,
             description: validPizza.description,
-            ImgSrc: validPizza.ImgSrc,
+            imgSrc: validPizza.imgSrc,
             toppingIds: validPizza.toppings.map((topping) => topping.id),
           },
         };
@@ -114,7 +114,7 @@ describe('pizzaResolver', (): void => {
             __typename: 'Pizza',
             name: validPizza.name,
             description: validPizza.description,
-            ImgSrc: validPizza.ImgSrc,
+            imgSrc: validPizza.imgSrc,
             toppingIds: validPizza.toppings.map((topping) => topping.id),
           },
         });
@@ -156,7 +156,7 @@ describe('pizzaResolver', (): void => {
             id
             name
             description
-            ImgSrc
+            imgSrc
             toppings
             priceCents
           }
@@ -165,7 +165,7 @@ describe('pizzaResolver', (): void => {
       const updatedPizza = createMockPizza({
         name: 'test pizza',
         description: 'description 1',
-        ImgSrc: 'img 1',
+        imgSrc: 'img 1',
         toppings: [],
         priceCents: 250,
       });
