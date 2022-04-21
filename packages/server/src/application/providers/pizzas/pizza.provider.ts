@@ -1,12 +1,6 @@
 //Type imports
 import { ObjectId, Collection } from 'mongodb';
-<<<<<<< HEAD
 import { PizzaDocument, toPizzaObject, PizzaInp } from '../../../entities/pizza';
-=======
-import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
-import { Pizza, CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
-import validateStringInputs from '../../../lib/string-validator';
->>>>>>> 3.7.2
 import { ToppingProvider } from '../toppings/topping.provider';
 import { toppingProvider } from '..';
 
@@ -18,37 +12,17 @@ import validateStringInputs from '../../../lib/string-validator';
 import { isString } from 'lodash';
 
 class PizzaProvider {
-<<<<<<< HEAD
   constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
 
   public async getPizzas(): Promise<PizzaInp[]> {
-=======
-  constructor(private collection: Collection<PizzaDocument>, private tP: ToppingProvider) {
-    if (this.tP === null) {
-      this.tP = toppingProvider;
-    }
-  }
-
-  public async getPizzas(): Promise<Pizza[]> {
->>>>>>> 3.7.2
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
   }
 
-<<<<<<< HEAD
   public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {
     const { name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc];
     validateStringInputs(strInp);
-=======
-  public async createPizza(input: CreatePizzaInput): Promise<Pizza> {
-    const { name, description, ImgSrc, toppingIds } = input;
-    const strInp = [name, description, ImgSrc];
-    if (strInp) validateStringInputs(strInp);
-
-    const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
-    if (toppingIDs) this.tP.validateToppings(toppingIDs);
->>>>>>> 3.7.2
 
     this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
@@ -78,14 +52,7 @@ class PizzaProvider {
 
     if (strInp.length != 0) validateStringInputs(strInp);
 
-<<<<<<< HEAD
     if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
-=======
-    if (toppingIds) {
-      const toppingIDs = toppingIds.map((topping) => new ObjectId(topping));
-      this.tP.validateToppings(toppingIDs);
-    }
->>>>>>> 3.7.2
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
