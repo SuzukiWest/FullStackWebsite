@@ -6,7 +6,6 @@ import { mockSortToArray } from '../helpers/mongo.helper';
 import { createMockPizzaDocument, createMockPizzaInp } from '../helpers/pizza.helper';
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
-import { ToppingDocument } from '../../src/entities/topping';
 
 const stubPizzaCollection = stub<Collection<PizzaDocument>>();
 const stubToppingProvider = stub<ToppingProvider>();

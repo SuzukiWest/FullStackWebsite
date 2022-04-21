@@ -7,7 +7,7 @@ import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
 const createMockPizza = (data?: Partial<Pizza>): Pizza => {
   return {
     __typename: 'Pizza',
-    id: new ObjectId().toHexString(),
+    id: new ObjectId(),
     name: 'Pizza 1',
     description: 'description 1',
     imgSrc: 'image 1',
@@ -30,7 +30,7 @@ const createMockPizzaInp = (data?: Partial<PizzaInp>): PizzaInp => {
 
 const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument => {
   return {
-    id: new ObjectId(),
+    _id: new ObjectId(),
     name: 'Pizza 1',
     description: 'description 1',
     imgSrc: 'image 1',
