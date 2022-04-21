@@ -6,7 +6,7 @@ const GET_PIZZAS = gql`
       id
       name
       description
-      ImgSrc
+      imgSrc
       toppings {
         id
         name

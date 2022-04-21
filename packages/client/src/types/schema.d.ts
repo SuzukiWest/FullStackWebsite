@@ -14,8 +14,8 @@ export type Scalars = {
 };
 
 export type CreatePizzaInput = {
-  ImgSrc: Scalars['String'];
   description: Scalars['String'];
+  imgSrc: Scalars['String'];
   name: Scalars['String'];
   toppingIds: Array<Scalars['ObjectID']>;
 };
@@ -69,9 +69,9 @@ export type MutationUpdateToppingArgs = {
 
 export type Pizza = {
   __typename?: 'Pizza';
-  ImgSrc: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['ObjectID'];
+  imgSrc: Scalars['String'];
   name: Scalars['String'];
   priceCents: Scalars['Int'];
   toppings: Array<Topping>;
@@ -95,9 +95,9 @@ export type ToppingQueryArgs = {
 };
 
 export type UpdatePizzaInput = {
-  ImgSrc?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['ObjectID'];
+  imgSrc?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   toppingIds?: Maybe<Array<Scalars['ObjectID']>>;
 };
