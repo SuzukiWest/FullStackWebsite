@@ -61,7 +61,8 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
             toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
           }}
           //ADD YUP VALIDATION
-          onSubmit={async (selectedPizza) => {
+          onSubmit={async (values) => {
+            selectPizza(values);
             new Promise((r) => setTimeout(r, 500));
             alert(JSON.stringify(selectedPizza, null, 2));
             selectedPizza?.id ? onUpdatePizza(selectedPizza) : onCreatePizza(selectedPizza);
@@ -70,9 +71,14 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
         >
           {({ values }) => (
             <Form>
-              <Field id="name" name="name" defaultValue={values.name} />
-              <Field id="description" name="description" defaultValue={values.description} />
-              <Field id="ImgSrc" name="ImgSrc" defaultValue={values.ImgSrc} />
+              <Field id="name" name="name" defaultValue={values.name} placeholder="Pizza Name" />
+              <Field
+                id="description"
+                name="description"
+                defaultValue={values.description}
+                placeholder="Pizza Description"
+              />
+              <Field id="ImgSrc" name="ImgSrc" defaultValue={values.ImgSrc} placeholder="Pizza Image Source" />
 
               <div id="toppingsHeader">Toppings</div>
               <div role="group" aria-labelledby="toppingsHeader">
