@@ -2,135 +2,106 @@ import { List, Modal } from '@material-ui/core';
 import * as React from 'react';
 
 import { Box } from '@material-ui/core';
-import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import { Formik, Field, Form, FieldArray } from 'formik';
-import { TextField } from '@material-ui/core';
-import { FormGroup } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 
-import { Topping } from '../../types/schema';
+import { Pizza, Topping } from '../../types/schema';
 import usePizzaMutations from '../../hooks/pizza/use-pizza-mutations';
 import { ObjectId } from 'bson';
+
+import * as Yup from 'yup';
 
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
-{
-  /*
+
 interface PizzaModalProps {
-  selectedPizza?: any;
+  selectedPizza?: Pizza;
   selectPizza: React.Dispatch<React.SetStateAction<any>>;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  allToppings: any;
+  allToppings: Topping[];
 }
 
-const PizzaModal = ({selectedPizza, selectPizza, open, setOpen, allToppings}: PizzaModalProps): JSX.Element => {
-  const {onCreatePizza, onDeletePizza, onUpdatePizza} = usePizzaMutations();
+//Include default empty pizza rather than UNDEFINED
+const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: PizzaModalProps): JSX.Element => {
+  const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
-  function checkPizza(toppingID: any) {
-    if (toppingID in selectedPizza.toppingIds) return true;
-    return false;
-  }
+  //Build topping checklist
+  let ToppingList = allToppings.map((topping: Topping) => (
+    <label>
+      <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
+      {topping.name}
+    </label>
+  ));
 
-  let toppingChecklist = allToppings.map((topping: any) => {
-    <FormControlLabel control={<Checkbox />} name={'toppings'} label={topping.name} value={topping.id} key={topping.id} defaultChecked={checkPizza(topping.id)}/>
-  });
+  return (
+    <Modal
+      open={open}
+      onClose={(): void => {
+        selectPizza(undefined);
+        setOpen(false);
+      }}
+    >
+      <Box sx={style}>
+        <Formik
+          initialValues={{
+            id: selectedPizza?.id,
+            name: selectedPizza?.name,
+            description: selectedPizza?.description,
+            ImgSrc: selectedPizza?.ImgSrc,
+            toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
+          }}
+          //ADD YUP VALIDATION
+          onSubmit={async (selectedPizza) => {
+            new Promise((r) => setTimeout(r, 500));
+            alert(JSON.stringify(selectedPizza, null, 2));
+            selectedPizza?.id ? onUpdatePizza(selectedPizza) : onCreatePizza(selectedPizza);
+            setOpen(false);
+          }}
+        >
+          {({ values }) => (
+            <Form>
+              <Field id="name" name="name" defaultValue={values.name} />
+              <Field id="description" name="description" defaultValue={values.description} />
+              <Field id="ImgSrc" name="ImgSrc" defaultValue={values.ImgSrc} />
 
-  const handleSubmit = (): void => {
-    selectedPizza?.id ? onUpdatePizza(selectedPizza) :onCreatePizza(selectedPizza);
-    setOpen(false);
-  };
+              <div id="toppingsHeader">Toppings</div>
+              <div role="group" aria-labelledby="toppingsHeader">
+                <List>{ToppingList}</List>
+              </div>
 
-  return(
-    <React.Fragment>
-
-      <Modal
-        open={open}
-        onClose={(): void => {setOpen(false)}}
-      >
-        <Box sx={style}>
-          <Button onClick= {(): void => {
-          onDeletePizza(selectedPizza);
-          setOpen(false);}}>
-          Delete Pizza
-         </Button>
-          {/**FINALIZE FORMIK TAG
-           * initialValues={{ name: ""}}?
-
-          <Formik initialValues={{}}
-            onSubmit={(values, actions) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }, 1000);
-            }
-          >
-            <Form  onSubmit={handleSubmit}>
-              <TextField name="name" type="string" defaultValue={selectedPizza?.name}
-                onChange={(event): void => selectPizza({ ...selectedPizza, name: event.target.value })}/>
-              <TextField name="description" type="string" defaultValue={selectedPizza?.description}
-                onChange={(event): void => selectPizza({ ...selectedPizza, description: event.target.value })} />
-              <TextField name="ImageSource" type="string" defaultValue={selectedPizza?.ImgSrc}
-                onChange={(event): void => selectPizza({ ...selectedPizza, ImgSrc: event.target.value })} />
-
-              {/**USE INSTEAD OF FIELD ARR?
-               * import * as React from 'react';
-import Checkbox from '@mui/material/Checkbox';
-
-export default function ControlledCheckbox() {
-  const [checked, setChecked] = React.useState(true);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
-
-
-FORM CONTROL LABEL - pass props to form
-{props => (
-<form>
-                <FormControlLabel control={<Checkbox defaultChecked />} label="Label" name="checkbox"   onChange={props.handleChange} />
-               {props.errors.name && <div id="feedback">{props.errors.name}</div>}
-
-
-UPDATE TOPPINGS BUTTON
-                  <Button onClick={(): void => {this.getElementBy}}>Update Toppings</Button>
-
-}
-
-              <FormGroup>
-                  {/*Create list of All toppings in checkbox
-                    -Organize
-                    -search
-
-                    -Alter toppings based on unchecked boxes
-
-                  {toppingChecklist}
-                </FormGroup>
-
-              {/* MAY NEED TO CHECK IF NEW PIZZA WAS ADDED
-              <Button type="submit" >Update Pizza</Button>
+              <Button type="submit">Create/Update Pizza</Button>
+              <Button
+                onClick={(): void => {
+                  onDeletePizza(selectedPizza);
+                  setOpen(false);
+                }}
+              >
+                Delete Pizza
+              </Button>
             </Form>
-          </Formik>
+          )}
+        </Formik>
 
-          <Button onClick={(): void => {setOpen(false)}}>Close Pizza Modal</Button>
-        </Box>
-      </Modal>
-    </React.Fragment>
-
+        <Button
+          onClick={(): void => {
+            setOpen(false);
+          }}
+        >
+          Close Pizza Modal
+        </Button>
+      </Box>
+    </Modal>
   );
 };
 
 export default PizzaModal;
-*/
-}

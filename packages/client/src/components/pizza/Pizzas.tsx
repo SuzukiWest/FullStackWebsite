@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, List, Theme, createStyles } from '@material-ui/core';
+import { Container, List, Theme, createStyles, Button } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/styles';
 
@@ -8,10 +8,11 @@ import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 
 import PizzaItem from './PizzaItem';
-//import PizzaModal from './PizzaModal';
+import PizzaModal from './PizzaModal';
 //Import Queries
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
 import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
+import { ObjectId } from 'bson';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -39,7 +40,7 @@ const Pizzas: React.FC = () => {
   //Open/close Modals
   const [open, setOpen] = React.useState(false);
   //Select Pizza Item to open/close
-  const [selectedPizza, setSelectedPizza] = React.useState<Partial<Pizza>>();
+  const [selectedPizza, setSelectedPizza] = React.useState<Pizza>();
 
   const { loading, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
   const { data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
@@ -68,24 +69,34 @@ const Pizzas: React.FC = () => {
   }
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem pizzaDat-testid={`pizza-item-${pizza?.id}`}
-     key={pizza.id} pizza={pizza}
-     selectPizza={selectPizza}
-     onClick={(): void => selectPizza(pizza)}/>
+    <PizzaItem
+      pizzaDat-testid={`pizza-item-${pizza?.id}`}
+      key={pizza.id}
+      pizza={pizza}
+      selectPizza={selectPizza}
+      onClick={(): void => selectPizza(pizza)}
+    />
   ));
 
   return (
     <Container maxWidth="md">
+      <Button
+        onClick={(): void => {
+          selectPizza(undefined);
+        }}
+      >
+        Create Pizza
+      </Button>
       <PageHeader pageHeader={'Pizza'} />
       <List>{PizzaList}</List>
 
-      {/*    <PizzaModal
+      <PizzaModal
         selectedPizza={selectedPizza}
         selectPizza={selectPizza}
         open={open}
         setOpen={setOpen}
-        allToppings={toppingDat}
-  /> */}
+        allToppings={toppingDat.toppings}
+      />
     </Container>
   );
 };
