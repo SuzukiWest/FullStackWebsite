@@ -7,6 +7,7 @@ const scalarSchema = gql`
   scalar ObjectID
   scalar Long
   scalar String
+  scalar Int
 `;
 
 const typeDefs = gql`

@@ -16,8 +16,17 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
-  public async getPriceCents(toppings: Topping[]): Promise<number> {
+  public async getPriceCents(toppingIds: ObjectId[]): Promise<number> {
+    const toppings = await this.getToppingsByIds(toppingIds);
     return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
+  }
+
+  //Confirms toppings exist for Creation or Update of Pizza
+  public async validateToppings(toppingIds: ObjectId[]): Promise<void> {
+    const toppingObjects = await this.getToppingsByIds(toppingIds);
+    if (toppingIds.length !== toppingObjects.length) {
+      throw new Error('Not all requested toppings exist');
+    }
   }
 
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
