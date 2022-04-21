@@ -3,7 +3,7 @@ import { Collection } from 'mongodb';
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
 import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument,createMockPizzaInp } from '../helpers/pizza.helper';
+import { createMockPizzaDocument, createMockPizzaInp } from '../helpers/pizza.helper';
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
 import { ToppingDocument } from '../../src/entities/topping';
@@ -46,7 +46,7 @@ describe('pizzaProvider', (): void => {
       description: 'description 1',
       imgSrc: 'img 1',
       toppingIds: [],
-    }); //INPUT TOPPINGIDS
+    });
 
     beforeEach(() => {
       reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));
@@ -109,7 +109,7 @@ describe('pizzaProvider', (): void => {
       description: 'description 1',
       imgSrc: 'img 1',
       toppingIds: [],
-    }); //INPUT TOPPINGIDS
+    });
 
     beforeEach(() => {
       reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));

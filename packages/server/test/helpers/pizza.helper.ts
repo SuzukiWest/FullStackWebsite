@@ -4,7 +4,6 @@ import { ObjectId } from 'mongodb';
 import { Pizza } from 'src/application/schema/types/schema';
 import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
 
-
 const createMockPizza = (data?: Partial<Pizza>): Pizza => {
   return {
     __typename: 'Pizza',

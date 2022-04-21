@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/styles';
 
 import { Pizza } from '../../types';
-import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
+import { GET_PIZZAS } from '../../hooks/graphql/topping/mutations/queries/get-pizzas';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 

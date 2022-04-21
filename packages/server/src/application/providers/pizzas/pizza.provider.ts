@@ -88,7 +88,7 @@ class PizzaProvider {
     const pizza = pizzaData.value;
 
     if (!pizza) {
-      throw new Error(`Could not delete the pizza`);
+      throw new Error(`Could not delete pizza`);
     }
 
     return id;
