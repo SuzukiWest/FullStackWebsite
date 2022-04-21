@@ -3,11 +3,10 @@ import { Collection } from 'mongodb';
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
 import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument } from '../helpers/pizza.helper';
+import { createMockPizzaDocument,createMockPizzaInp } from '../helpers/pizza.helper';
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
 import { ToppingDocument } from '../../src/entities/topping';
-import { createMockTopping } from '../helpers/topping.helper';
 
 const stubPizzaCollection = stub<Collection<PizzaDocument>>();
 const stubToppingProvider = stub<ToppingProvider>();
@@ -19,7 +18,8 @@ beforeEach(jest.clearAllMocks);
 //Test Pizzas Query
 describe('pizzaProvider', (): void => {
   const mockPizzaDocument = createMockPizzaDocument();
-  const mockPizza = toPizzaObject(mockPizzaDocument);
+  const mockPizzaInp = createMockPizzaInp(mockPizzaDocument);
+  const mockPizza = toPizzaObject(mockPizzaInp);
 
   describe('getPizzas', (): void => {
     beforeEach(() => {
@@ -82,7 +82,7 @@ describe('pizzaProvider', (): void => {
     });
 
     test('should call findOneAndDelete once', async () => {
-      await pizzaProvider.deletePizza(mockPizza.id);
+      await pizzaProvider.deletePizza(mockPizzaDocument.id);
 
       expect(stubPizzaCollection.findOneAndDelete).toHaveBeenCalledTimes(1);
     });
@@ -90,13 +90,15 @@ describe('pizzaProvider', (): void => {
     test('should throw an error if findOneAndDelete return null for value', async () => {
       reveal(stubPizzaCollection).findOneAndDelete.mockImplementation(() => ({ value: null }));
 
-      await expect(pizzaProvider.deletePizza(mockPizza.id)).rejects.toThrow(new Error('Could not delete pizza'));
+      await expect(pizzaProvider.deletePizza(mockPizzaDocument.id)).rejects.toThrow(
+        new Error('Could not delete pizza')
+      );
     });
 
     test('should return an id', async () => {
-      const result = await pizzaProvider.deletePizza(mockPizza.id);
+      const result = await pizzaProvider.deletePizza(mockPizzaDocument.id);
 
-      expect(result).toEqual(mockPizza.id);
+      expect(result).toEqual(mockPizzaDocument.id);
     });
   });
 

@@ -1,3 +1,4 @@
+/*
 import { gql } from 'apollo-server-core';
 import { pizzaProvider } from 'src/application/providers';
 import { toppingResolver } from 'src/application/resolvers/topping.resolver';
@@ -70,6 +71,7 @@ describe('pizzaResolver', (): void => {
       });
     });
   });
+});
 
   //Test Resolver Mutations
   describe('Mutation', () => {

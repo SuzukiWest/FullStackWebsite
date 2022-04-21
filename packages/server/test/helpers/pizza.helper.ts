@@ -40,4 +40,4 @@ const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument =
   };
 };
 
-export { createMockPizza, createMockPizzaDocument };
+export { createMockPizza, createMockPizzaDocument, createMockPizzaInp };
