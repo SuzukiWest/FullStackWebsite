@@ -12,13 +12,11 @@ describe('PizzaItem', () => {
 
     return {
       ...view,
-      PizzaItem: view.container,
       $checkTestPizza: () => screen.getByTestId(/^pizza-test$/),
 
-      $getName: () => screen.getByTestId(/^pizza-name/),
-      $getDescription: () => screen.getByTestId(/^pizza-description/),
+      $getHeader: () => screen.getByTestId(/^pizza-header/),
       $getPrice: () => screen.getByTestId(/^pizza-price/),
-      $getToppings: () => screen.getAllByTestId(/^pizza-toppingList/),
+      $getToppings: () => screen.getAllByTestId(/^pizza-toppings/),
       $getImgSrc: () => screen.getByTestId(/^pizza-imgSrc/),
 
       $getButtons: () => screen.getByRole('button'),
@@ -34,20 +32,17 @@ describe('PizzaItem', () => {
   test('should display all 5 components of the pizza item', async () => {
     const { ...out } = renderPizzaList(props);
 
-    const name = out.$getName();
-    const description = out.$getDescription();
+    const header = out.$getHeader();
     const price = out.$getPrice();
     const toppings = out.$getToppings();
     const img = out.$getImgSrc();
 
-    expect(out.$checkTestPizza()).toContainElement(name);
-    expect(out.$checkTestPizza()).toContainElement(description);
+    expect(out.$checkTestPizza()).toContainElement(header);
     expect(out.$checkTestPizza()).toContainElement(price);
     toppings.forEach((topping) => expect(out.$checkTestPizza()).toContainElement(topping));
     expect(out.$checkTestPizza()).toContainElement(img);
 
-    expect(name).toBeVisible;
-    expect(description).toBeVisible;
+    expect(header).toBeVisible;
     expect(price).toBeVisible;
     expect(toppings).toBeVisible;
     expect(img).toBeVisible;
