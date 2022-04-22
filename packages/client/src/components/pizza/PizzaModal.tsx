@@ -58,7 +58,11 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
             setOpen(false);
           }}
         >
+<<<<<<< HEAD
           {({ values }): any => (
+=======
+          {({ values }) => (
+>>>>>>> PizzaItem to Card
             <Form>
               <Field id="name" name="name" defaultValue={values.name} placeholder="Pizza Name" />
               <Field
