@@ -1,40 +1,44 @@
 import { ObjectId } from 'mongodb';
 
-//DOUBLE CHECK THIS IS THE RIGHT TYPE - NOT FROM PROVIDERS
 import { Pizza } from 'src/application/schema/types/schema';
 import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
+import { createMockTopping } from './topping.helper';
 
-const createMockPizza = (data?: Partial<Pizza>): Pizza => {
+const createMockPizza = (data?: Partial<PizzaInp>): Pizza => {
   return {
     __typename: 'Pizza',
     id: new ObjectId(),
-    name: 'Pizza 1',
-    description: 'description 1',
-    imgSrc: 'image 1',
+    name: 'Mock Pizza',
+    description: 'Mock description',
+    imgSrc: 'Mock image',
     toppings: [],
-    priceCents: 250,
+    priceCents: 0,
     ...data,
   };
 };
 
 const createMockPizzaInp = (data?: Partial<PizzaInp>): PizzaInp => {
+  const mockTopping = createMockTopping();
+
   return {
     id: new ObjectId().toHexString(),
-    name: 'Pizza 1',
-    description: 'description 1',
-    imgSrc: 'image 1',
-    toppingIds: [],
+    name: 'Mock Pizza',
+    description: 'Mock description',
+    imgSrc: 'Mock image',
+    toppingIds: [mockTopping.id],
     ...data,
   };
 };
 
 const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument => {
+  const mockTopping = createMockTopping();
+
   return {
     _id: new ObjectId(),
-    name: 'Pizza 1',
-    description: 'description 1',
-    imgSrc: 'image 1',
-    toppingIds: [],
+    name: 'Mock Pizza',
+    description: 'Mock description',
+    imgSrc: 'Mock image',
+    toppingIds: [mockTopping.id],
     ...data,
   };
 };
