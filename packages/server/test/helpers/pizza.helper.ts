@@ -10,7 +10,7 @@ const createMockPizza = (data?: Partial<Pizza>): Pizza => {
     id: new ObjectId().toHexString(),
     name: 'Pizza 1',
     description: 'description 1',
-    ImgSrc: 'image 1',
+    imgSrc: 'image 1',
     toppings: [], //Input ids for test
     priceCents: 250,
     ...data,
@@ -22,7 +22,7 @@ const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument =
     id: new ObjectId(),
     name: 'Pizza 1',
     description: 'description 1',
-    ImgSrc: 'image 1',
+    imgSrc: 'image 1',
     toppingIds: [], //Input ids for test
     ...data,
   };
