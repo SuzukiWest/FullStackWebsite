@@ -56,7 +56,7 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
             id: selectedPizza?.id,
             name: selectedPizza?.name,
             description: selectedPizza?.description,
-            ImgSrc: selectedPizza?.ImgSrc,
+            imgSrc: selectedPizza?.imgSrc,
             toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
           }}
           //ADD YUP VALIDATION

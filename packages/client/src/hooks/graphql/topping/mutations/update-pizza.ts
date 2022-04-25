@@ -1,8 +1,9 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_PIZZA = gql`
-  mutation ($createPizzaInput: CreatePizzaInput!) {
-    createPizza(input: $createPizzaInput) {
+export const UPDATE_PIZZA = gql`
+  mutation ($updatePizzaInput: UpdatePizzaInput!) {
+    updatePizza(input: $updatePizzainput) {
+      id
       name
       description
       imgSrc

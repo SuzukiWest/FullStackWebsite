@@ -15,7 +15,7 @@ interface UsePizzaMutationsOutput {
 const usePizzaMutations = (): void => {
   const [createPizza] = useMutation(CREATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
   const [deletePizza] = useMutation(DELETE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
-  const [updatePizza] = useMutation(UPDATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
+  const [updatePizza] = useMutation(UPDATE_PIZZA);
 
   //useCallback to check
   const onCreatePizza = useCallback(
@@ -25,7 +25,7 @@ const usePizzaMutations = (): void => {
           createPizzaInput: {
             name: selectedPizza.name,
             description: selectedPizza.description,
-            ImgSrc: selectedPizza.ImgSrc,
+            imgSrc: selectedPizza.imgSrc,
             toppingIds: selectedPizza.toppingIds,
           },
         },
@@ -33,4 +33,43 @@ const usePizzaMutations = (): void => {
     },
     [createPizza]
   );
+
+  const onUpdatePizza = useCallback(
+    (selectedPizza) => {
+      try {
+        updatePizza({
+          variables: {
+            updatePizzaInput: {
+              id: selectedPizza.id,
+              name: selectedPizza?.name,
+              description: selectedPizza?.description,
+              imgSrc: selectedPizza?.imgSrc,
+              toppingIds: selectedPizza?.toppingIds,
+            },
+          },
+        });
+      } catch (error) {
+        throw new Error('Update-Pizza input(client) not working');
+      }
+    },
+    [updatePizza]
+  );
+
+  const onDeletePizza = useCallback(
+    async (selectedPizza) => {
+      try {
+        await deletePizza({
+          variables: {
+            deletePizzaInput: {
+              id: selectedPizza.id,
+            },
+          },
+        });
+      } catch (error) {
+        throw new Error('Delete-Pizza input(client) not working');
+      }
+    },
+    [deletePizza]
+  );
+  return { onCreatePizza, onDeletePizza, onUpdatePizza };
 };
