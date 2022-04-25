@@ -95,11 +95,11 @@ export type ToppingQueryArgs = {
 };
 
 export type UpdatePizzaInput = {
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   id: Scalars['ObjectID'];
-  imgSrc: Scalars['String'];
-  name: Scalars['String'];
-  toppingIds: Array<Scalars['ObjectID']>;
+  imgSrc?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  toppingIds?: Maybe<Array<Scalars['ObjectID']>>;
 };
 
 export type UpdateToppingInput = {
