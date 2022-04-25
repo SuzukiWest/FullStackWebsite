@@ -1,7 +1,10 @@
-import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';
+//General
 import { Root } from '../schema/types/types';
-import { pizzaProvider, toppingProvider } from '../providers';
 import { ObjectId } from 'mongodb';
+
+//Topping imports
+import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';
+import { toppingProvider } from '../providers';
 
 const toppingResolver = {
   Query: {

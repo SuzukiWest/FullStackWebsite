@@ -1,9 +1,14 @@
+//Type imports
 import { ObjectId, Collection } from 'mongodb';
-import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
-import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
-import validateStringInputs from '../../../lib/string-validator';
-import { PizzaInp } from '../../../entities/pizza';
+import { PizzaDocument, toPizzaObject, PizzaInp } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
+
+//Input Types
+import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
+
+//Helper function
+import validateStringInputs from '../../../lib/string-validator';
+
 class PizzaProvider {
   constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
 

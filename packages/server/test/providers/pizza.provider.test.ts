@@ -1,11 +1,13 @@
-import { Collection } from 'mongodb';
-
-import { reveal, stub } from 'jest-auto-stub';
-import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
+//Helper mock functions
 import { mockSortToArray } from '../helpers/mongo.helper';
 import { createMockPizzaDocument, createMockTopping } from '../helpers/pizza.helper';
+import { reveal, stub } from 'jest-auto-stub';
+
+//Provider/Type imports
+import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
+import { Collection } from 'mongodb';
 
 const stubPizzaCollection = stub<Collection<PizzaDocument>>();
 const stubToppingProvider = stub<ToppingProvider>();
@@ -61,6 +63,7 @@ describe('pizzaProvider', (): void => {
       });
 
       expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
+      expect(stubToppingProvider.validateToppings).toHaveBeenCalledTimes(1);
     });
 
     test('should return a pizza when passed valid input', async () => {

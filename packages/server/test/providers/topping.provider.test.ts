@@ -2,7 +2,7 @@ import { Collection, ObjectId } from 'mongodb';
 
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
-import { mockSortToArray, mockToArray, mockFilterToppingIds } from '../helpers/mongo.helper';
+import { mockSortToArray, mockFilterToppingIds } from '../helpers/mongo.helper';
 import { createMockToppingDocument } from '../helpers/topping.helper';
 import { ToppingDocument, toToppingObject } from '../../src/entities/topping';
 
@@ -79,7 +79,7 @@ describe('toppingProvider', (): void => {
       });
     });
 
-    describe.only('validateToppings', (): void => {
+    describe('validateToppings', (): void => {
       beforeEach(() => {
         reveal(stubToppingCollection).find.mockImplementation(
           mockSortToArray(
