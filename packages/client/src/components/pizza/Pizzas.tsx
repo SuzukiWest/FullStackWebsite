@@ -72,7 +72,7 @@ const Pizzas: React.FC = () => {
       pizzaDat-testid={`pizza-item-${pizza?.id}`}
       key={pizza.id}
       pizza={pizza}
-      selectPizza={selectPizza}
+      selectPizza={setSelectedPizza}
       onClick={(): void => selectPizza(pizza)}
     />
   ));
@@ -91,7 +91,7 @@ const Pizzas: React.FC = () => {
 
       <PizzaModal
         selectedPizza={selectedPizza}
-        selectPizza={selectPizza}
+        selectPizza={setSelectedPizza}
         open={open}
         setOpen={setOpen}
         allToppings={toppingDat.toppings}

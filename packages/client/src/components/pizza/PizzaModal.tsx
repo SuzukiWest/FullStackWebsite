@@ -59,12 +59,10 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
             imgSrc: selectedPizza?.imgSrc,
             toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
           }}
-          //ADD YUP VALIDATION
-          onSubmit={async (values) => {
-            selectPizza(values);
+          onSubmit={async (input) => {
             new Promise((r) => setTimeout(r, 500));
-            alert(JSON.stringify(selectedPizza, null, 2));
-            selectedPizza?.id ? onUpdatePizza(selectedPizza) : onCreatePizza(selectedPizza);
+            alert(JSON.stringify(input, null, 2));
+            selectedPizza?.id ? onUpdatePizza(input) : onCreatePizza(input);
             setOpen(false);
           }}
         >
@@ -84,7 +82,7 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
                 <List>{ToppingList}</List>
               </div>
 
-              <Button type="submit">Create/Update Pizza</Button>
+              <Button type="submit">Update Pizza</Button>
               <Button
                 onClick={(): void => {
                   onDeletePizza(selectedPizza);
