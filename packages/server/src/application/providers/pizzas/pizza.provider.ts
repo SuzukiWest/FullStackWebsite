@@ -4,22 +4,12 @@ import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
 import validateStringInputs from '../../../lib/string-validator';
 import { PizzaInp } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
-import { Pizza } from '../pizzas/pizza.provider.types';
-import { Topping } from 'src/application/schema/types/schema';
 class PizzaProvider {
   constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
 
   public async getPizzas(): Promise<PizzaInp[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
     return pizzas.map(toPizzaObject);
-  }
-
-  public async getPizzaToppings(toppingIds: ObjectId[]): Promise<Topping[]> {
-    return this.toppingProvider.getToppingsByIds(toppingIds);
-  }
-
-  public async getPizzaPrice(toppings: Topping[]): Promise<number> {
-    return this.toppingProvider.getPriceCents(toppings);
   }
 
   public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {

@@ -6,7 +6,7 @@ const createMockTopping = (data?: Partial<Topping>): Topping => {
   return {
     __typename: 'Topping',
     id: new ObjectId().toHexString(),
-    name: 'Tomato Sauce',
+    name: 'Mock Tomato Sauce',
     priceCents: 250,
     ...data,
   };
@@ -15,7 +15,7 @@ const createMockTopping = (data?: Partial<Topping>): Topping => {
 const createMockToppingDocument = (data?: Partial<ToppingDocument>): ToppingDocument => {
   return {
     _id: new ObjectId(),
-    name: 'Tomato Sauce',
+    name: 'Mock Tomato Sauce',
     priceCents: 250,
     ...data,
   };

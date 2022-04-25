@@ -12,20 +12,29 @@ class ToppingProvider {
   }
 
   public async getToppingsByIds(ids: ObjectId[]): Promise<Topping[]> {
-    const toppings = await this.collection.find({ _id: { $in: ids } }).toArray();
-    return toppings.map(toToppingObject);
+    console.log(ids);
+    if (ids.length == 0) throw Error('ToppingIds required for toppings');
+    else {
+      const toppings = await this.collection
+        .find({ _id: { $in: ids } })
+        .sort({ name: 1 })
+        .toArray();
+      return toppings.map(toToppingObject);
+    }
   }
 
   public async getPriceCents(toppings: Topping[]): Promise<number> {
+    if (toppings == []) throw Error('Toppings required for priceCents');
     return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
   public async validateToppings(toppingIds: ObjectId[]): Promise<void> {
+    if (toppingIds.length == 0) throw new Error();
+
     const toppingObjects = await this.getToppingsByIds(toppingIds);
-    if (toppingIds.length !== toppingObjects.length) {
-      throw new Error('Not all requested toppings exist');
-    }
+
+    if (toppingIds.length != toppingObjects.length) throw new Error();
   }
 
   public async createTopping(input: CreateToppingInput): Promise<Topping> {

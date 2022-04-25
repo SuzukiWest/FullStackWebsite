@@ -3,7 +3,7 @@ import { Collection } from 'mongodb';
 import { reveal, stub } from 'jest-auto-stub';
 import { ToppingProvider } from '../../src/application/providers/toppings/topping.provider';
 import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument, createMockPizzaInp } from '../helpers/pizza.helper';
+import { createMockPizzaDocument, createMockTopping } from '../helpers/pizza.helper';
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
 
@@ -14,11 +14,12 @@ const pizzaProvider = new PizzaProvider(stubPizzaCollection, stubToppingProvider
 
 beforeEach(jest.clearAllMocks);
 
-//Test Pizzas Query
+//Test Pizza Provider
 describe('pizzaProvider', (): void => {
-  const mockPizzaDocument = createMockPizzaDocument();
-  const mockPizzaInp = createMockPizzaInp(mockPizzaDocument);
-  const mockPizza = toPizzaObject(mockPizzaInp);
+  const mockTopping = createMockTopping();
+  const mockPizzaDocument = createMockPizzaDocument({ toppingIds: [mockTopping.id] });
+  const mockPizza = toPizzaObject(mockPizzaDocument);
+  //Test Pizzas Query
 
   describe('getPizzas', (): void => {
     beforeEach(() => {
@@ -31,32 +32,32 @@ describe('pizzaProvider', (): void => {
       expect(stubPizzaCollection.find).toHaveBeenCalledTimes(1);
     });
 
-    test('should get all toppings', async () => {
+    test('should get all pizzas', async () => {
       const result = await pizzaProvider.getPizzas();
 
       expect(result).toEqual([mockPizza]);
     });
   });
 
-  //Test Pizza Creation
+  //Test Create Pizza
   describe('createPizza', (): void => {
-    const validPizza = createMockPizzaDocument({
-      name: 'test pizza',
-      description: 'description 1',
-      imgSrc: 'img 1',
-      toppingIds: [],
+    const createPizza = createMockPizzaDocument({
+      name: 'create pizza',
+      description: 'create description',
+      imgSrc: 'create img',
+      toppingIds: [mockTopping.id],
     });
 
     beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));
+      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: createPizza }));
     });
 
-    test('should call findOneAndUpdate once', async () => {
+    test('should call helper find once', async () => {
       await pizzaProvider.createPizza({
-        name: validPizza.name,
-        description: validPizza.description,
-        imgSrc: validPizza.imgSrc,
-        toppingIds: validPizza.toppingIds,
+        name: createPizza.name,
+        description: createPizza.description,
+        imgSrc: createPizza.imgSrc,
+        toppingIds: [mockTopping.id],
       });
 
       expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
@@ -64,17 +65,17 @@ describe('pizzaProvider', (): void => {
 
     test('should return a pizza when passed valid input', async () => {
       const result = await pizzaProvider.createPizza({
-        name: validPizza.name,
-        description: validPizza.description,
-        imgSrc: validPizza.imgSrc,
-        toppingIds: validPizza.toppingIds,
+        name: createPizza.name,
+        description: createPizza.description,
+        imgSrc: createPizza.imgSrc,
+        toppingIds: [mockTopping.id],
       });
 
-      expect(result).toEqual(toPizzaObject(validPizza));
+      expect(result).toEqual(toPizzaObject(createPizza));
     });
   });
 
-  //Test Pizza Deletion
+  //Test Delete Pizza
   describe('delete Pizza', (): void => {
     beforeEach(() => {
       reveal(stubPizzaCollection).findOneAndDelete.mockImplementation(() => ({ value: mockPizzaDocument }));
@@ -101,41 +102,42 @@ describe('pizzaProvider', (): void => {
     });
   });
 
-  //Test Pizza Update
+  //Test Update Pizza
   describe('updatePizza', (): void => {
-    const validPizza = createMockPizzaDocument({
-      name: 'test pizza',
-      description: 'description 1',
-      imgSrc: 'img 1',
-      toppingIds: [],
+    const updatedPizza = createMockPizzaDocument({
+      name: 'updated pizza',
+      description: 'updated description',
+      imgSrc: 'updated img',
+      toppingIds: [mockTopping.id],
     });
 
     beforeEach(() => {
-      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: validPizza }));
+      reveal(stubPizzaCollection).findOneAndUpdate.mockImplementation(() => ({ value: updatedPizza }));
     });
 
     test('should call findOneAndUpdate once', async () => {
       await pizzaProvider.updatePizza({
-        id: validPizza.id,
-        name: validPizza.name,
-        description: validPizza.description,
-        imgSrc: validPizza.imgSrc,
-        toppingIds: validPizza.toppingIds,
+        id: updatedPizza.id,
+        name: updatedPizza.name,
+        description: updatedPizza.description,
+        imgSrc: updatedPizza.imgSrc,
+        toppingIds: updatedPizza.toppingIds,
       });
 
       expect(stubPizzaCollection.findOneAndUpdate).toHaveBeenCalledTimes(1);
+      expect(stubToppingProvider.validateToppings).toHaveBeenCalledTimes(1);
     });
 
     test('should return a pizza', async () => {
       const result = await pizzaProvider.updatePizza({
-        id: validPizza.id,
-        name: validPizza.name,
-        description: validPizza.description,
-        imgSrc: validPizza.imgSrc,
-        toppingIds: validPizza.toppingIds,
+        id: updatedPizza.id,
+        name: updatedPizza.name,
+        description: updatedPizza.description,
+        imgSrc: updatedPizza.imgSrc,
+        toppingIds: updatedPizza.toppingIds,
       });
 
-      expect(result).toEqual(toPizzaObject(validPizza));
+      expect(result).toEqual(toPizzaObject(updatedPizza));
     });
   });
 });

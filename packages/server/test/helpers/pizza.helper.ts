@@ -1,10 +1,21 @@
 import { ObjectId } from 'mongodb';
 
-import { Pizza } from 'src/application/schema/types/schema';
+import { Pizza, Topping } from 'src/application/schema/types/schema';
 import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
-import { createMockTopping } from './topping.helper';
 
-const createMockPizza = (data?: Partial<PizzaInp>): Pizza => {
+//Avoid dependency between pizzaResolverTests and toppingHelper
+//One way dependency from Pizza to Toppings
+const createMockTopping = (data?: Partial<Topping>): Topping => {
+  return {
+    __typename: 'Topping',
+    id: new ObjectId().toHexString(),
+    name: 'Mock Tomato Sauce',
+    priceCents: 900,
+    ...data,
+  };
+};
+
+const createMockPizza = (data?: Partial<Pizza>): Pizza => {
   return {
     __typename: 'Pizza',
     id: new ObjectId(),
@@ -18,29 +29,25 @@ const createMockPizza = (data?: Partial<PizzaInp>): Pizza => {
 };
 
 const createMockPizzaInp = (data?: Partial<PizzaInp>): PizzaInp => {
-  const mockTopping = createMockTopping();
-
   return {
     id: new ObjectId().toHexString(),
     name: 'Mock Pizza',
     description: 'Mock description',
     imgSrc: 'Mock image',
-    toppingIds: [mockTopping.id],
+    toppingIds: [],
     ...data,
   };
 };
 
 const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument => {
-  const mockTopping = createMockTopping();
-
   return {
     _id: new ObjectId(),
     name: 'Mock Pizza',
     description: 'Mock description',
     imgSrc: 'Mock image',
-    toppingIds: [mockTopping.id],
+    toppingIds: [],
     ...data,
   };
 };
 
-export { createMockPizza, createMockPizzaDocument, createMockPizzaInp };
+export { createMockPizza, createMockPizzaDocument, createMockPizzaInp, createMockTopping };

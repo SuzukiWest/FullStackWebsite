@@ -12,10 +12,10 @@ const toppingResolver = {
 
   Pizza: {
     toppings: async (pizza: { toppingIds: ObjectId[] }): Promise<Topping[]> => {
-      return await pizzaProvider.getPizzaToppings(pizza.toppingIds);
+      return toppingProvider.getToppingsByIds(pizza.toppingIds);
     },
     priceCents: async (pizza: { toppings: Topping[] }): Promise<number> => {
-      return await pizzaProvider.getPizzaPrice(pizza.toppings);
+      return toppingProvider.getPriceCents(pizza.toppings);
     },
   },
 
