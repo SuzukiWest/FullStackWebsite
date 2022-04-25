@@ -1,7 +1,7 @@
-import { Document, ObjectId } from 'mongodb';
+import { Document } from 'mongodb';
 import { Pizza } from '../application/providers/pizzas/pizza.provider.types';
 
-type PizzaInp = Omit<Pizza, 'toppings' | 'priceCents'> & { toppingIds: ObjectId[] };
+export type PizzaInp = Omit<Pizza, 'toppings' | 'priceCents'> & { toppingIds: string[] };
 interface PizzaDocument extends Document, Omit<PizzaInp, 'id'> {}
 
 const toPizzaObject = (pizza: PizzaDocument): PizzaInp => {
@@ -9,9 +9,9 @@ const toPizzaObject = (pizza: PizzaDocument): PizzaInp => {
     id: pizza._id.toHexString(),
     name: pizza.name,
     description: pizza.description,
-    ImgSrc: pizza.imgSrc,
+    imgSrc: pizza.imgSrc,
     toppingIds: pizza.toppingIds,
   };
 };
 
-export { PizzaDocument, toPizzaObject, PizzaInp };
+export { PizzaDocument, toPizzaObject };

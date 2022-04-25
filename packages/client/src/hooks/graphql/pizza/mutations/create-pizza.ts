@@ -5,7 +5,7 @@ export const CREATE_PIZZA = gql`
     createPizza(input: $createPizzaInput) {
       name
       description
-      ImgSrc
+      imgSrc
       toppingIds
     }
   }

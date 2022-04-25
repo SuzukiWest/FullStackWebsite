@@ -3,8 +3,8 @@ import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 
 //imports
-import { CREATE_PIZZA, DELETE_PIZZA, UPDATE_PIZZA } from '../graphql/topping/mutations';
-import { GET_PIZZAS } from '../graphql/topping/queries/get-pizzas';
+import { CREATE_PIZZA, DELETE_PIZZA, UPDATE_PIZZA } from '../graphql/pizza/mutations/index';
+import { GET_PIZZAS } from '../graphql/pizza/queries/get-pizzas';
 
 interface UsePizzaMutationsOutput {
   onCreatePizza: (selectedPizza: any) => void;
@@ -25,7 +25,7 @@ const usePizzaMutations = (): UsePizzaMutationsOutput => {
           createPizzaInput: {
             name: selectedPizza.name,
             description: selectedPizza.description,
-            ImgSrc: selectedPizza.ImgSrc,
+            imgSrc: selectedPizza.imgSrc,
             toppingIds: selectedPizza.toppingIds,
           },
         },
@@ -43,7 +43,7 @@ const usePizzaMutations = (): UsePizzaMutationsOutput => {
               id: selectedPizza.id,
               name: selectedPizza?.name,
               description: selectedPizza?.description,
-              ImgSrc: selectedPizza?.ImgSrc,
+              imgSrc: selectedPizza?.imgSrc,
               toppingIds: selectedPizza?.toppingIds,
             },
           },

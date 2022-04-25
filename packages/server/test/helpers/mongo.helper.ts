@@ -8,4 +8,9 @@ const mockSortToArray =
   (): any =>
     ({ sort: () => ({ toArray: (): any => resultArray }) } as any);
 
-export { mockToArray, mockSortToArray };
+//Mock filter for .find({_id:{$in:toppingIds}})
+//Replacement for mongo DB filter
+const mockFilterToppingIds = (resultArray: any[], ids: any[]): any =>
+  resultArray.filter((ele) => ids.includes(ele._id));
+
+export { mockToArray, mockSortToArray, mockFilterToppingIds };

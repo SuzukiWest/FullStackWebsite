@@ -1,7 +1,10 @@
-import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';
+//General
 import { Root } from '../schema/types/types';
-import { toppingProvider } from '../providers';
 import { ObjectId } from 'mongodb';
+
+//Topping imports
+import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';
+import { toppingProvider } from '../providers';
 
 const toppingResolver = {
   Query: {
@@ -11,11 +14,11 @@ const toppingResolver = {
   },
 
   Pizza: {
-    toppings: async (pizza: { toppingIds: ObjectId[] }): Promise<Topping[]> => {
-      return await toppingProvider.getToppingsByIds(pizza.toppingIds);
+    toppings: async (pizza: { toppingIds: string[] }): Promise<Topping[]> => {
+      return toppingProvider.getToppingsByIds(pizza.toppingIds);
     },
-    priceCents: async (pizza: { toppingIds: ObjectId[] }): Promise<number> => {
-      return await toppingProvider.getPriceCents(pizza.toppingIds);
+    priceCents: async (pizza: { toppings: Topping[] }): Promise<number> => {
+      return toppingProvider.getPriceCents(pizza.toppings);
     },
   },
 

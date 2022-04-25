@@ -39,8 +39,8 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, ...props }) =
             <ListItemText primary="Toppings" secondary={listToppings} />
           </ListItem>
 
-          <ImageListItem key={'pizza-ImgSrc-${pizza?.ImgSrc}'}>
-            <img src={pizza?.ImgSrc} alt={'No Image'} width="50%" height="25%" />
+          <ImageListItem key={'pizza-imgSrc-${pizza?.imgSrc}'}>
+            <img src={pizza?.imgSrc} alt={'No Image'} width="50%" height="25%" />
           </ImageListItem>
         </List>
       </CardItem>

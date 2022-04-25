@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/styles';
 
 import { Pizza } from '../../types';
+import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 
@@ -11,8 +12,6 @@ import PizzaItem from './PizzaItem';
 import PizzaModal from './PizzaModal';
 //Import Queries
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
-import { ObjectId } from 'bson';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
