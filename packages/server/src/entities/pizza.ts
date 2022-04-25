@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongodb';
+import { Document } from 'mongodb';
 import { Pizza } from '../application/providers/pizzas/pizza.provider.types';
 
 export type PizzaInp = Omit<Pizza, 'toppings' | 'priceCents'> & { toppingIds: string[] };
