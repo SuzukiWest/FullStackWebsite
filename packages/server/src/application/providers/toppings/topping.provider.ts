@@ -11,7 +11,7 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
-  public async getToppingsByIds(ids: ObjectId[]): Promise<Topping[]> {
+  public async getToppingsByIds(ids: string[]): Promise<Topping[]> {
     console.log(ids);
     if (ids.length == 0) throw Error('ToppingIds required for toppings');
     else {
@@ -29,8 +29,8 @@ class ToppingProvider {
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
-  public async validateToppings(toppingIds: ObjectId[]): Promise<void> {
-    if (toppingIds.length == 0) throw new Error();
+  public async validateToppings(toppingIds: string[]): Promise<void> {
+    if (toppingIds.length == 0 || toppingIds === null) throw new Error();
 
     const toppingObjects = await this.getToppingsByIds(toppingIds);
 

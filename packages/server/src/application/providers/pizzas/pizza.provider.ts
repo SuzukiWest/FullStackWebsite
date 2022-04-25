@@ -20,18 +20,14 @@ class PizzaProvider {
   public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {
     const { name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc];
-    if (strInp) validateStringInputs(strInp);
+    validateStringInputs(strInp);
 
-    const toppingObjectId = toppingIds.map((topping) => new ObjectId(topping));
-    if (toppingObjectId) this.toppingProvider.validateToppings(toppingObjectId);
-
+    this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },
       {
         $set: {
           ...input,
-          ...{ imgSrc: imgSrc },
-          ...{ toppingIds: toppingObjectId },
           updatedAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
         },
@@ -49,28 +45,30 @@ class PizzaProvider {
   }
 
   public async updatePizza(input: UpdatePizzaInput): Promise<PizzaInp> {
+    function filterStringArr(arr: any[]): string[] {
+      let ret = [];
+      for (let string in arr) {
+        if (typeof string !== null && typeof string != undefined) ret.push(string);
+      }
+      return ret;
+    }
     const { id, name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc];
-    if (!strInp) validateStringInputs(strInp);
+    if (strInp.length != 0) validateStringInputs(filterStringArr(strInp));
 
-    //Confirm toppings exist if input
-    let toppingObjectId: ObjectId[] = [];
-    if (toppingIds) {
-      toppingObjectId = toppingIds!.map((topping) => new ObjectId(topping));
-      this.toppingProvider.validateToppings(toppingObjectId);
-    }
-
+    if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
         $set: {
+          ...input,
           ...(name && { name: name }),
           ...(description && { description: description }),
           ...(imgSrc && { imgSrc: imgSrc }),
-          ...(toppingObjectId && { toppingIds: toppingObjectId }),
+          ...(toppingIds && { toppingIds: toppingIds }),
         },
       },
-      { returnDocument: 'after' }
+      { upsert: true, returnDocument: 'after' }
     );
 
     if (!data.value) {

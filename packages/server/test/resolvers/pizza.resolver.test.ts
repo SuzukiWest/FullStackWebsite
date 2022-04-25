@@ -236,6 +236,7 @@ describe('pizzaResolver', (): void => {
           input: {
             id: mockPizza.id,
             name: updatedPizza.name,
+            imgSrc: updatedPizza.imgSrc,
             description: updatedPizza.description,
             toppingIds: updatedPizzaInp.toppingIds,
           },
