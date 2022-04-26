@@ -1,12 +1,17 @@
+//Type imports
 import { ObjectId, Collection } from 'mongodb';
-import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
+import { PizzaDocument, toPizzaObject, PizzaInp } from '../../../entities/pizza';
+import { ToppingProvider } from '../toppings/topping.provider';
+
+//Input Types
 import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
-import { toppingProvider } from '..';
+
+//Helper function
 import validateStringInputs from '../../../lib/string-validator';
-import { PizzaInp } from '../../../entities/pizza';
+import { isString } from 'lodash';
 
 class PizzaProvider {
-  constructor(private collection: Collection<PizzaDocument>) {}
+  constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
 
   public async getPizzas(): Promise<PizzaInp[]> {
     const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
@@ -16,18 +21,14 @@ class PizzaProvider {
   public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {
     const { name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc];
-    if (strInp) validateStringInputs(strInp);
+    validateStringInputs(strInp);
 
-    const toppingObjectId = toppingIds.map((topping) => new ObjectId(topping));
-    if (toppingObjectId) toppingProvider.validateToppings(toppingObjectId);
-
+    this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId() },
       {
         $set: {
           ...input,
-          ...{ imgSrc: imgSrc },
-          ...{ toppingIds: toppingObjectId },
           updatedAt: new Date().toISOString(),
           createdAt: new Date().toISOString(),
         },
@@ -46,27 +47,23 @@ class PizzaProvider {
 
   public async updatePizza(input: UpdatePizzaInput): Promise<PizzaInp> {
     const { id, name, description, imgSrc, toppingIds } = input;
-    const strInp = [name, description, imgSrc];
-    if (!strInp) validateStringInputs(strInp);
+    const strInp = [name, description, imgSrc].filter(isString);
 
-    //Confirm toppings exist if input
-    let toppingObjectId: ObjectId[] = [];
-    if (toppingIds) {
-      toppingObjectId = toppingIds!.map((topping) => new ObjectId(topping));
-      toppingProvider.validateToppings(toppingObjectId);
-    }
+    if (strInp.length != 0) validateStringInputs(strInp);
 
+    if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
         $set: {
+          ...input,
           ...(name && { name: name }),
           ...(description && { description: description }),
           ...(imgSrc && { imgSrc: imgSrc }),
-          ...(toppingObjectId && { toppingIds: toppingObjectId }),
+          ...(toppingIds && { toppingIds: toppingIds }),
         },
       },
-      { returnDocument: 'after' }
+      { upsert: true, returnDocument: 'after' }
     );
 
     if (!data.value) {
@@ -88,7 +85,7 @@ class PizzaProvider {
     const pizza = pizzaData.value;
 
     if (!pizza) {
-      throw new Error(`Could not delete the pizza`);
+      throw new Error(`Could not delete pizza`);
     }
 
     return id;

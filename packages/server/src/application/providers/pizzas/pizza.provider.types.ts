@@ -13,13 +13,13 @@ export interface CreatePizzaInput {
   name: string;
   description: string;
   imgSrc: string;
-  toppingIds: ObjectId[];
+  toppingIds: string[];
 }
 
 export interface UpdatePizzaInput {
   id: ObjectId;
-  name?: string | null;
-  description?: string | null;
-  imgSrc?: string | null;
-  toppingIds?: ObjectId[] | null;
+  name?: string;
+  description?: string;
+  imgSrc?: string;
+  toppingIds?: string[];
 }

@@ -11,22 +11,31 @@ class ToppingProvider {
     return toppings.map(toToppingObject);
   }
 
-  public async getToppingsByIds(ids: ObjectId[]): Promise<Topping[]> {
-    const toppings = await this.collection.find({ _id: { $in: ids } }).toArray();
+  private emptyArrayCheck(array: any[]): void {
+    if (!array?.length) throw new Error('Empty input');
+  }
+
+  public async getToppingsByIds(ids: string[]): Promise<Topping[]> {
+    this.emptyArrayCheck(ids);
+    const toppings = await this.collection
+      .find({ _id: { $in: ids } })
+      .sort({ name: 1 })
+      .toArray();
     return toppings.map(toToppingObject);
   }
 
-  public async getPriceCents(toppingIds: ObjectId[]): Promise<number> {
-    const toppings = await this.getToppingsByIds(toppingIds);
+  public async getPriceCents(toppings: Topping[]): Promise<number> {
+    this.emptyArrayCheck(toppings);
+
     return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
-  public async validateToppings(toppingIds: ObjectId[]): Promise<void> {
+  public async validateToppings(toppingIds: string[]): Promise<void> {
+    this.emptyArrayCheck(toppingIds);
     const toppingObjects = await this.getToppingsByIds(toppingIds);
-    if (toppingIds.length !== toppingObjects.length) {
-      throw new Error('Not all requested toppings exist');
-    }
+
+    if (toppingIds.length != toppingObjects.length) throw new Error('Missing requested topping(s)');
   }
 
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
