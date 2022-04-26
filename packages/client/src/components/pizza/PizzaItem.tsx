@@ -5,7 +5,11 @@ import { List } from '@material-ui/core';
 import toDollars from '../../lib/format-dollars';
 
 export interface PizzaItemProps {
-  pizza?: Pizza;
+  id: any;
+  key: any;
+  pizza: Pizza;
+  selectPizza: any;
+  setCreate: any;
 }
 
 const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
@@ -18,31 +22,35 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }) => {
   const pizzaPrice = pizza?.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
 
   return (
-    <nav aria-label="pizzas">
-      <CardItem {...props}>
-        <List>
-          <ListItem key={`pizza-name-${pizza?.name}`}>
-            <ListItemText primary={pizza?.name + ' Pizza'} />
-          </ListItem>
+    <CardItem
+      {...props}
+      onClick={(): void => {
+        selectPizza(pizza);
+        setCreate(false);
+      }}
+    >
+      <List data-testid={`pizza-list`}>
+        <ListItem data-testid={`pizza-name-${pizza?.name}`} key={pizza.description}>
+          <ListItemText primary={pizza?.name + ' Pizza'} />
+        </ListItem>
 
-          <ListItem key={`pizza-description-${pizza?.description}`}>
-            <ListItemText primary={'Description:' + pizza?.description} />
-          </ListItem>
+        <ListItem data-testid={`pizza-description-${pizza?.description}`} key={pizza.description}>
+          <ListItemText primary={'Description:' + pizza?.description} />
+        </ListItem>
 
-          <ListItem>
-            <h4>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
-          </ListItem>
+        <ListItem data-testid={'pizza-price-${pizza?.description}'} key={pizza.description}>
+          <h4>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
+        </ListItem>
 
-          <ListItem key={'pizza-toppings-${pizza?.id}'}>
-            <ListItemText primary="Toppings" secondary={listToppings} />
-          </ListItem>
+        <ListItem data-testid={'pizza-toppings-${pizza?.id}'} key={'pizza-toppingsList-{pizza.name}'}>
+          <ListItemText primary="Toppings" secondary={listToppings} />
+        </ListItem>
 
-          <ImageListItem key={'pizza-imgSrc-${pizza?.imgSrc}'}>
-            <img src={pizza?.imgSrc} alt={'No Image'} width="50%" height="25%" />
-          </ImageListItem>
-        </List>
-      </CardItem>
-    </nav>
+        <ImageListItem data-testid={'pizza-imgSrc-${pizza?.imgSrc}'} key={'pizza-img-${pizza.name}'}>
+          <img src={pizza?.imgSrc} alt={pizza.name} width="50%" height="25%" />
+        </ImageListItem>
+      </List>
+    </CardItem>
   );
 };
 

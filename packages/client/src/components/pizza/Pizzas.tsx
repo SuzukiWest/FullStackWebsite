@@ -9,14 +9,11 @@ import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 
 import PizzaItem from './PizzaItem';
-<<<<<<< HEAD
-=======
 import PizzaModal from './PizzaModal';
 //Import Queries
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
 import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
 import { ObjectId } from 'bson';
->>>>>>> Apr 20
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -41,14 +38,10 @@ const useStyles = makeStyles(({ typography }: Theme) =>
 const Pizzas: React.FC = () => {
   const classes = useStyles();
 
-<<<<<<< HEAD
-  const { loading, data, error } = useQuery(GET_PIZZAS);
-=======
   //Open/close Modals
   const [open, setOpen] = React.useState(false);
   //Select Pizza Item to open/close
   const [selectedPizza, setSelectedPizza] = React.useState<Pizza>();
->>>>>>> Apr 20
 
   if (error) {
     <div className={classes.container} key="Pizza load error">
@@ -68,6 +61,7 @@ const Pizzas: React.FC = () => {
     <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} />
 =======
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
+<<<<<<< HEAD
     <PizzaItem
       pizzaDat-testid={`pizza-item-${pizza?.id}`}
       key={pizza.id}
@@ -76,6 +70,9 @@ const Pizzas: React.FC = () => {
       onClick={(): void => selectPizza(pizza)}
     />
 >>>>>>> Apr 20
+=======
+    <PizzaItem id={pizza.id} key={pizza.name} pizza={pizza} selectPizza={selectPizza} setCreate={setCreate} />
+>>>>>>> test suite bult - not fully functional
   ));
 
   return (
