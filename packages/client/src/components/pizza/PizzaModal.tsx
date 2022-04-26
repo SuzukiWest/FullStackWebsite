@@ -1,4 +1,4 @@
-import { List, Modal } from '@material-ui/core';
+import { Modal } from '@material-ui/core';
 import * as React from 'react';
 
 import { Box } from '@material-ui/core';
@@ -59,16 +59,14 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
             imgSrc: selectedPizza?.imgSrc,
             toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
           }}
-          //ADD YUP VALIDATION
-          onSubmit={async (values) => {
-            selectPizza(values);
+          onSubmit={async (input): Promise<any> => {
             new Promise((r) => setTimeout(r, 500));
             alert(JSON.stringify(selectedPizza, null, 2));
             selectedPizza?.id ? onUpdatePizza(selectedPizza) : onCreatePizza(selectedPizza);
             setOpen(false);
           }}
         >
-          {({ values }) => (
+          {({ values }): any => (
             <Form>
               <Field id="name" name="name" defaultValue={values.name} placeholder="Pizza Name" />
               <Field
