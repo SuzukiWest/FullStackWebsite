@@ -6,7 +6,11 @@ export const CREATE_PIZZA = gql`
       name
       description
       imgSrc
-      toppingIds
+      toppings {
+        id
+        name
+        priceCents
+      }
     }
   }
 `;

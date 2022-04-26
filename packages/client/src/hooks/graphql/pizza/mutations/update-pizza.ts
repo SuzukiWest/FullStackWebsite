@@ -2,12 +2,16 @@ import { gql } from '@apollo/client';
 
 export const UPDATE_PIZZA = gql`
   mutation ($updatePizzaInput: UpdatePizzaInput!) {
-    updatePizza(input: $updatePizzainput) {
+    updatePizza(input: $updatePizzaInput) {
       id
       name
       description
       imgSrc
-      toppingIds
+      toppings {
+        id
+        name
+        priceCents
+      }
     }
   }
 `;

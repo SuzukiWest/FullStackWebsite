@@ -3,12 +3,10 @@ import * as React from 'react';
 
 import { Box } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form } from 'formik';
 
-import { Pizza, Topping } from '../../types/schema';
+import { Topping } from '../../types/schema';
 import usePizzaMutations from '../../hooks/pizza/use-pizza-mutations';
-
-import * as Yup from 'yup';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,15 +21,24 @@ const style = {
 };
 
 interface PizzaModalProps {
-  selectedPizza?: Pizza;
-  selectPizza: React.Dispatch<React.SetStateAction<any>>;
+  selectedPizza?: any;
+  selectPizza: any;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  allToppings: Topping[];
+  setOpen: any;
+  allToppings: any;
+  setCreate: any;
+  create: any;
 }
 
-//Include default empty pizza rather than UNDEFINED
-const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: PizzaModalProps): JSX.Element => {
+const PizzaModal = ({
+  selectedPizza,
+  selectPizza,
+  open,
+  setOpen,
+  setCreate,
+  create,
+  allToppings,
+}: PizzaModalProps): JSX.Element => {
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
   //Build topping checklist
@@ -46,8 +53,9 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
     <Modal
       open={open}
       onClose={(): void => {
-        selectPizza(undefined);
         setOpen(false);
+        setCreate(false);
+        selectPizza(undefined);
       }}
     >
       <Box sx={style}>
@@ -62,7 +70,8 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
           onSubmit={async (input) => {
             new Promise((r) => setTimeout(r, 500));
             alert(JSON.stringify(input, null, 2));
-            selectedPizza?.id ? onUpdatePizza(input) : onCreatePizza(input);
+            if (create) onCreatePizza(input);
+            else onUpdatePizza(input);
             setOpen(false);
           }}
         >
@@ -79,13 +88,13 @@ const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: 
 
               <div id="toppingsHeader">Toppings</div>
               <div role="group" aria-labelledby="toppingsHeader">
-                <List>{ToppingList}</List>
+                {ToppingList}
               </div>
 
-              <Button type="submit">Update Pizza</Button>
+              <Button type="submit">{create ? 'Create' : 'Update'} Pizza</Button>
               <Button
                 onClick={(): void => {
-                  onDeletePizza(selectedPizza);
+                  if (selectedPizza) onDeletePizza(selectedPizza);
                   setOpen(false);
                 }}
               >

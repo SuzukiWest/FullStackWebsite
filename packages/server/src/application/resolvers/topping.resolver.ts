@@ -1,6 +1,4 @@
-//General
 import { Root } from '../schema/types/types';
-import { ObjectId } from 'mongodb';
 
 //Topping imports
 import { CreateToppingInput, DeleteToppingInput, Topping, UpdateToppingInput } from '../schema/types/schema';

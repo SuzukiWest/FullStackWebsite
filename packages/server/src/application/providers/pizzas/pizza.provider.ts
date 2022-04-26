@@ -8,6 +8,7 @@ import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
 
 //Helper function
 import validateStringInputs from '../../../lib/string-validator';
+import { isString } from 'lodash';
 
 class PizzaProvider {
   constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
@@ -45,30 +46,23 @@ class PizzaProvider {
   }
 
   public async updatePizza(input: UpdatePizzaInput): Promise<PizzaInp> {
-    function filterStringArr(arr: any[]): string[] {
-      let ret = [];
-      for (let string in arr) {
-        if (typeof string !== null && typeof string != undefined) ret.push(string);
-      }
-      return ret;
-    }
     const { id, name, description, imgSrc, toppingIds } = input;
-    const strInp = [name, description, imgSrc];
-    if (strInp.length != 0) validateStringInputs(filterStringArr(strInp));
+    const strInp = [name, description, imgSrc].filter(isString);
+
+    if (strInp.length > 0) validateStringInputs(strInp);
 
     if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
         $set: {
-          ...input,
           ...(name && { name: name }),
           ...(description && { description: description }),
           ...(imgSrc && { imgSrc: imgSrc }),
           ...(toppingIds && { toppingIds: toppingIds }),
         },
       },
-      { upsert: true, returnDocument: 'after' }
+      { returnDocument: 'after' }
     );
 
     if (!data.value) {

@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb';
-
 export interface Pizza {
   id: string;
   name: string;
@@ -17,9 +15,9 @@ export interface CreatePizzaInput {
 }
 
 export interface UpdatePizzaInput {
-  id: ObjectId;
-  name?: string;
-  description?: string;
-  imgSrc?: string;
-  toppingIds?: string[];
+  id: string;
+  name?: string | null;
+  description?: string | null;
+  imgSrc?: string | null;
+  toppingIds?: string[] | null;
 }
