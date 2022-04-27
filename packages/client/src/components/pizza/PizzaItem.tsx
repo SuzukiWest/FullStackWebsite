@@ -7,10 +7,10 @@ import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 export interface PizzaItemProps {
   pizza: Pizza;
-  onClick: any;
+  selectPizza: any;
 }
 
-const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }: PizzaItemProps) => {
+const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, ...props }: PizzaItemProps) => {
   const pizzaPrice = pizza?.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
 
   const listToppings = pizza?.toppings.map((topping: Topping) => (
@@ -25,9 +25,9 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, ...props }: PizzaItemProps
   const pizzaPrice = pizza?.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
 
   return (
-    <CardItem {...props}>
+    <CardItem data-testid={'pizzaItem-test'} {...props}>
       <List>
-        <Button>
+        <Button onClick={(): void => selectPizza(false, pizza)}>
           <ListItemText primary={pizza?.name + ' Pizza'} data-testid={`pizza-name-${pizza?.id}`} />
 
           <ListItemText primary={'Description:' + pizza?.description} data-testid={`pizza-description-${pizza?.id}`} />

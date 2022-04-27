@@ -4,14 +4,13 @@ import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/styles';
 
 import { Pizza } from '../../types';
-import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
 import PageHeader from '../common/PageHeader';
 
 import PizzaItem from './PizzaItem';
 import PizzaModal from './PizzaModal';
 //Import Queries
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
+import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
 import { ObjectId } from 'bson';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
@@ -54,25 +53,8 @@ const Pizzas: React.FC = () => {
     </div>;
   }
 
-<<<<<<< HEAD
   const PizzaList = data?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} />
-=======
-  const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <PizzaItem
-      pizzaDat-testid={`pizza-item-${pizza?.id}`}
-      key={pizza.id}
-      pizza={pizza}
-      selectPizza={selectPizza}
-      onClick={(): void => selectPizza(pizza)}
-    />
->>>>>>> Apr 20
-=======
-    <PizzaItem id={pizza.id} key={pizza.name} pizza={pizza} selectPizza={selectPizza} setCreate={setCreate} />
->>>>>>> test suite bult - not fully functional
-=======
+
     <PizzaItem
       data-testid={`pizza-item-${pizza.id}`}
       key={pizza.id}
@@ -82,41 +64,36 @@ const Pizzas: React.FC = () => {
         setCreate(false);
       }}
     />
->>>>>>> Change expected to html format or other way around
-  ));
+
+  const selectPizza = (create: boolean, pizza?: Pizza): void => {
+    setSelectedPizza(pizza);
+    setCreate(create);
+    setOpen(true);
+  };
+
 
   return (
     <Container maxWidth="md">
       <Button
         onClick={(): void => {
-          selectPizza(undefined);
+          selectPizza(true, undefined);
         }}
       >
         Create Pizza
       </Button>
       <PageHeader pageHeader={'Pizza'} />
-<<<<<<< HEAD
-      <List>{PizzaList}</List>
-<<<<<<< HEAD
-=======
-=======
+
       <List data-testid={'Pizza-list'}>{PizzaList}</List>
->>>>>>> Change expected to html format or other way around
 
       <PizzaModal
         selectedPizza={selectedPizza}
         selectPizza={selectPizza}
         open={open}
         setOpen={setOpen}
-<<<<<<< HEAD
-        allToppings={toppingDat.toppings}
-=======
         allToppings={toppingDat?.toppings}
         create={create}
         setCreate={setCreate}
->>>>>>> Change expected to html format or other way around
       />
->>>>>>> Apr 20
     </Container>
   );
 };

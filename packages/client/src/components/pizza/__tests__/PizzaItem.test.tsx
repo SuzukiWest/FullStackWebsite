@@ -13,7 +13,7 @@ describe('PizzaItem', () => {
     return {
       ...view,
       PizzaItem: view.container,
-      $checkTestPizza: () => screen.findByTestId(/^pizza-test$/),
+      $checkTestPizza: () => screen.getByTestId(/^pizza-test$/),
 
       $getName: () => screen.getByTestId(/^pizza-name/),
       $getDescription: () => screen.getByTestId(/^pizza-description/),
@@ -28,7 +28,7 @@ describe('PizzaItem', () => {
   const testTopping = createTestTopping();
   const props = {
     pizza: createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents }),
-    onClick: jest.fn(),
+    selectPizza: jest.fn(),
   };
 
   test('should display all 5 components of the pizza item', async () => {
@@ -40,9 +40,12 @@ describe('PizzaItem', () => {
     const toppings = out.$getToppings();
     const img = out.$getImgSrc();
 
-    const Pizza = [name, description, price, toppings, img].concat();
+    expect(out.$checkTestPizza()).toContainElement(name);
+    expect(out.$checkTestPizza()).toContainElement(description);
+    expect(out.$checkTestPizza()).toContainElement(price);
+    toppings.forEach((topping) => expect(out.$checkTestPizza()).toContainElement(topping));
+    expect(out.$checkTestPizza()).toContainElement(img);
 
-    expect(out.PizzaItem).toContain(<PizzaItem {...props} />);
     expect(name).toBeVisible;
     expect(description).toBeVisible;
     expect(price).toBeVisible;
@@ -55,6 +58,6 @@ describe('PizzaItem', () => {
 
     userEvent.click($getButtons());
 
-    expect(props.onClick).toHaveBeenCalledTimes(1);
+    expect(props.selectPizza).toHaveBeenCalledTimes(1);
   });
 });
