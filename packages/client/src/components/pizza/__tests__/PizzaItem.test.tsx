@@ -2,46 +2,59 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithProviders } from '../../../lib/test/renderWithProviders';
-import { createTestPizza } from '../../../lib/test/helper/pizza';
+import { createTestPizza, createTestTopping } from '../../../lib/test/helper/pizza';
 import PizzaItem, { PizzaItemProps } from '../PizzaItem';
 import React from 'react';
-import { Pizza } from '../../../types/schema';
 
 describe('PizzaItem', () => {
   const renderPizzaList = (props: PizzaItemProps) => {
-    const view = renderWithProviders(<PizzaItem {...props} />);
+    const view = renderWithProviders(<PizzaItem data-testid={'pizza-test'} {...props} />);
 
     return {
       ...view,
-      $getPrice: () => screen.getByTestId(/^pizza-price/),
+      PizzaItem: view.container,
+      $checkTestPizza: () => screen.findByTestId(/^pizza-test$/),
+
       $getName: () => screen.getByTestId(/^pizza-name/),
-      $getModifyButton: () => screen.getByRole('button'),
+      $getDescription: () => screen.getByTestId(/^pizza-description/),
+      $getPrice: () => screen.getByTestId(/^pizza-price/),
+      $getToppings: () => screen.getAllByTestId(/^pizza-toppingList/),
+      $getImgSrc: () => screen.getByTestId(/^pizza-imgSrc/),
+
+      $getButtons: () => screen.getByRole('button'),
     };
-
   };
-  const testPizza = createTestPizza()
 
+  const testTopping = createTestTopping();
   const props = {
-    pizza: testPizza,
-    id: testPizza.id,
-    key: testPizza.name,
-    selectPizza: jest.fn(),
-    setCreate: jest.fn(),
+    pizza: createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents }),
+    onClick: jest.fn(),
   };
 
-  test('should display all components of the pizza item', async () => {
-    const { $getPrice, $getName, $getModifyButton } = renderPizzaList(props);
+  test('should display all 5 components of the pizza item', async () => {
+    const { ...out } = renderPizzaList(props);
 
-    expect($getPrice()).toBeVisible();
-    expect($getName()).toBeVisible();
-    expect($getModifyButton()).toBeVisible();
+    const name = out.$getName();
+    const description = out.$getDescription();
+    const price = out.$getPrice();
+    const toppings = out.$getToppings();
+    const img = out.$getImgSrc();
+
+    const Pizza = [name, description, price, toppings, img].concat();
+
+    expect(out.PizzaItem).toContain(<PizzaItem {...props} />);
+    expect(name).toBeVisible;
+    expect(description).toBeVisible;
+    expect(price).toBeVisible;
+    expect(toppings).toBeVisible;
+    expect(img).toBeVisible;
   });
 
   test('should call selectPizza when the pizza item is clicked', async () => {
-    const { $getModifyButton } = renderPizzaList(props);
+    const { $getButtons } = renderPizzaList(props);
 
-    userEvent.click($getModifyButton());
+    userEvent.click($getButtons());
 
-    expect(props.selectPizza).toHaveBeenCalledTimes(1);
+    expect(props.onClick).toHaveBeenCalledTimes(1);
   });
 });

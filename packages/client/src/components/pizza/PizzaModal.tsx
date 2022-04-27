@@ -33,14 +33,16 @@ interface PizzaModalProps {
 //Include default empty pizza rather than UNDEFINED
 const PizzaModal = ({ selectedPizza, selectPizza, open, setOpen, allToppings }: PizzaModalProps): JSX.Element => {
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
-
-  //Build topping checklist
-  let ToppingList = allToppings.map((topping: Topping) => (
-    <label>
-      <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
-      {topping.name}
-    </label>
-  ));
+  let ToppingList = 'No Toppings';
+  if (allToppings) {
+    //Build topping checklist
+    ToppingList = allToppings?.map((topping: Topping) => (
+      <label>
+        <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
+        {topping.name}
+      </label>
+    ));
+  }
 
   return (
     <Modal

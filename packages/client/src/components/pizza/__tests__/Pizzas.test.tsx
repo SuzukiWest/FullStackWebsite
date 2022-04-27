@@ -1,50 +1,63 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { graphql } from 'msw';
 
 import { renderWithProviders } from '../../../lib/test/renderWithProviders';
 import { Pizza } from '../../../types';
 import { server } from '../../../lib/test/msw-server';
-import { createTestPizza } from '../../../lib/test/helper/pizza';
-import PizzaItem from '../PizzaItem';
+import { createTestPizza, createTestTopping } from '../../../lib/test/helper/pizza';
 import Pizzas from '../Pizzas';
 
-
 describe('Pizzas', () => {
-/*
   const renderPizzaList = () => {
-    const view = renderWithProviders(<PizzaItem />);
+    //Render test PizzaList
+    const view = renderWithProviders(<Pizzas />);
+
+    return {
       ...view,
 
-      $findPizzaItems: () => screen.findAllByTestId((/^data-testid/)),
-      $findPizzaItemsButtons: () => screen
+      //Functions to check render
+      $findPizzaItems: () => screen.findAllByTestId(/^pizza-item/),
+      $checkLoading: () => screen.queryByTestId(/pizza-loading/),
     };
   };
-*/
+
+  const testTopping = createTestTopping();
   const mockPizzasQuery = (data: Partial<Pizza[]>) => {
-    //await waitFor(() => {
-      server.use(
-        graphql.query('Pizzas', (_request, response, context) => {
-          return response(
-            context.data({
-              loading: false,
-              pizzas: [...data],
-            })
-          );
-        })
-      );
-    //});
+    server.use(
+      graphql.query('Pizzas', (_request, response, context) => {
+        return response(
+          context.data({
+            loading: false,
+            pizzas: [...data],
+          })
+        );
+      }),
+      graphql.query('Toppings', (_request, response, context) => {
+        return response(
+          context.data({
+            loading: false,
+            toppings: [testTopping],
+          })
+        );
+      })
+    );
   };
 
-  beforeEach(() => {
-    const TestPizza1 = createTestPizza();
-    const TestPizza2 = createTestPizza();
-    const TestPizzaList = [TestPizza1, TestPizza2];
-    const query = mockPizzasQuery(TestPizzaList);
-  });
+  const testPizza1 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
+  const testPizza2 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
 
-  test('should display a list of 2 pizzas', async () => {
-    //const result = renderPizzaList();
+  const testPizzaList = [testPizza1, testPizza2];
 
-   // expect(result).toHaveLength(2);
+  test('should display load screen and then list of 2 pizzas', async () => {
+    await waitFor(() => {
+      const { $checkLoading } = renderPizzaList();
+      mockPizzasQuery(testPizzaList);
+
+      expect($checkLoading()).toBeTruthy;
+      expect($checkLoading()).toBeVisible;
+    });
+
+    const { $findPizzaItems } = renderPizzaList();
+    await waitFor(() => expect($findPizzaItems()).resolves.toHaveLength(2));
   });
 });

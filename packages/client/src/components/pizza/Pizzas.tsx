@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Pizza } from '../../types';
 import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
 import PageHeader from '../common/PageHeader';
-import CardItemSkeleton from '../common/CardItemSkeleton';
 
 import PizzaItem from './PizzaItem';
 import PizzaModal from './PizzaModal';
@@ -48,12 +47,11 @@ const Pizzas: React.FC = () => {
       <h1>"Error Loading Pizzas Page"</h1>
     </div>;
   }
-  if (loading) {
-    return (
-      <div className={classes.container} key="Pizza loading">
-        <CardItemSkeleton data-testid={'pizza-list-loading'} />
-      </div>
-    );
+
+  if (pizzaLoad || toppingLoad) {
+    <div className={classes.container} key="Pizza loading message">
+      <h1 data-testid={'pizza-loading'}>Loading Pizzas...</h1>
+    </div>;
   }
 
 <<<<<<< HEAD
@@ -61,6 +59,7 @@ const Pizzas: React.FC = () => {
     <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} />
 =======
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
+<<<<<<< HEAD
 <<<<<<< HEAD
     <PizzaItem
       pizzaDat-testid={`pizza-item-${pizza?.id}`}
@@ -73,6 +72,17 @@ const Pizzas: React.FC = () => {
 =======
     <PizzaItem id={pizza.id} key={pizza.name} pizza={pizza} selectPizza={selectPizza} setCreate={setCreate} />
 >>>>>>> test suite bult - not fully functional
+=======
+    <PizzaItem
+      data-testid={`pizza-item-${pizza.id}`}
+      key={pizza.id}
+      pizza={pizza}
+      onClick={(pizza: Pizza): void => {
+        selectPizza(pizza);
+        setCreate(false);
+      }}
+    />
+>>>>>>> Change expected to html format or other way around
   ));
 
   return (
@@ -85,16 +95,26 @@ const Pizzas: React.FC = () => {
         Create Pizza
       </Button>
       <PageHeader pageHeader={'Pizza'} />
+<<<<<<< HEAD
       <List>{PizzaList}</List>
 <<<<<<< HEAD
 =======
+=======
+      <List data-testid={'Pizza-list'}>{PizzaList}</List>
+>>>>>>> Change expected to html format or other way around
 
       <PizzaModal
         selectedPizza={selectedPizza}
         selectPizza={selectPizza}
         open={open}
         setOpen={setOpen}
+<<<<<<< HEAD
         allToppings={toppingDat.toppings}
+=======
+        allToppings={toppingDat?.toppings}
+        create={create}
+        setCreate={setCreate}
+>>>>>>> Change expected to html format or other way around
       />
 >>>>>>> Apr 20
     </Container>
