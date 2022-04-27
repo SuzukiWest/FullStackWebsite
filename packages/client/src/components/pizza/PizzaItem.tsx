@@ -1,9 +1,8 @@
-import { Collapse, ImageListItem, ListItem, ListItemText, Button } from '@material-ui/core';
+import { ImageListItem, ListItem, ListItemText, Button } from '@material-ui/core';
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
 import toDollars from '../../lib/format-dollars';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 export interface PizzaItemProps {
   pizza: Pizza;
