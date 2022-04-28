@@ -1,7 +1,36 @@
 import { ObjectId } from 'mongodb';
 
-import { Pizza, Topping } from 'src/application/schema/types/schema';
+import { Pizza, Topping, GetPizzasResponse as PizzaResponse } from 'src/application/schema/types/schema';
 import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
+import { GetPizzasResponse, QueryInput } from 'src/application/providers/pizzas/pizza.provider.types';
+
+const createMockCursor = (data?: Partial<QueryInput>): QueryInput => {
+  return {
+    limit: null,
+    ...data,
+  };
+};
+
+const mockCursorResult = (data?: Partial<GetPizzasResponse>): GetPizzasResponse => {
+  return {
+    hasNextPage: true,
+    cursorPosition: '000000000000000000000000',
+    totalCount: 0,
+    results: [],
+    ...data,
+  };
+};
+
+const createPizzaPage = (data?: Partial<PizzaResponse>): PizzaResponse => {
+  return {
+    __typename: 'GetPizzasResponse',
+    hasNextPage: true,
+    cursorPosition: '000000000000000000000000',
+    totalCount: 0,
+    results: [],
+    ...data,
+  };
+};
 
 //Avoid dependency between pizzaResolverTests and toppingHelper
 //One way dependency from Pizza to Toppings
@@ -50,4 +79,12 @@ const createMockPizzaDocument = (data?: Partial<PizzaDocument>): PizzaDocument =
   };
 };
 
-export { createMockPizza, createMockPizzaDocument, createMockPizzaInp, createMockTopping };
+export {
+  createMockPizza,
+  createMockPizzaDocument,
+  createMockPizzaInp,
+  createMockTopping,
+  createMockCursor,
+  mockCursorResult,
+  createPizzaPage,
+};

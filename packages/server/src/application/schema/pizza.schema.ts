@@ -11,7 +11,18 @@ const typeDefs = gql`
   }
 
   type Query {
-    pizzas: [Pizza!]!
+    pizzas(input: QueryInput!): GetPizzasResponse!
+  }
+
+  input QueryInput {
+    limit: Int
+  }
+
+  type GetPizzasResponse {
+    totalCount: Int!
+    hasNextPage: Boolean!
+    cursorPosition: ObjectID!
+    results: [Pizza!]!
   }
 
   type Mutation {

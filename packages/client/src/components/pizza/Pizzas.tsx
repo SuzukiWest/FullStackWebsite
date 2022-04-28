@@ -1,4 +1,4 @@
-//React visual imports
+//React imports
 import React from 'react';
 import { Container, Theme, createStyles, Button, Box, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';

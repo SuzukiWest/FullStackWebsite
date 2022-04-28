@@ -1,6 +1,10 @@
 //Helper mock functions
-import { mockSortToArray } from '../helpers/mongo.helper';
-import { createMockPizzaDocument, createMockTopping } from '../helpers/pizza.helper';
+import {
+  createMockCursor,
+  createMockPizzaDocument,
+  createMockTopping,
+  mockCursorResult,
+} from '../helpers/pizza.helper';
 import { reveal, stub } from 'jest-auto-stub';
 
 //Provider/Type imports
@@ -8,39 +12,50 @@ import { ToppingProvider } from '../../src/application/providers/toppings/toppin
 import { PizzaDocument, toPizzaObject } from '../../src/entities/pizza';
 import { PizzaProvider } from '../../src/application/providers/pizzas/pizza.provider';
 import { Collection } from 'mongodb';
+import { CursorProvider } from '../../src/application/providers/cursor/cursor.provider';
 
 const stubPizzaCollection = stub<Collection<PizzaDocument>>();
 const stubToppingProvider = stub<ToppingProvider>();
+const stubCursorProvider = stub<CursorProvider>();
 
-const pizzaProvider = new PizzaProvider(stubPizzaCollection, stubToppingProvider);
+const pizzaProvider = new PizzaProvider(stubPizzaCollection, stubToppingProvider, stubCursorProvider);
 
 beforeEach(jest.clearAllMocks);
 
 //Test Pizza Provider
 describe('pizzaProvider', (): void => {
+  //Build test data
   const mockTopping = createMockTopping();
   const mockPizzaDocument = createMockPizzaDocument({ toppingIds: [mockTopping.id] });
   const mockPizza = toPizzaObject(mockPizzaDocument);
-  //Test Pizzas Query
 
-  describe('getPizzas', (): void => {
-    beforeEach(() => {
-      reveal(stubPizzaCollection).find.mockImplementation(mockSortToArray([mockPizzaDocument]));
-    });
-
-    test('should call find once', async () => {
-      await pizzaProvider.getPizzas();
-
-      expect(stubPizzaCollection.find).toHaveBeenCalledTimes(1);
-    });
-
-    test('should get all pizzas', async () => {
-      const result = await pizzaProvider.getPizzas();
-
-      expect(result).toEqual([mockPizza]);
-    });
+  const mockPizzaDocument2 = createMockPizzaDocument({ name: 'pizza2', toppingIds: [mockTopping.id] });
+  const mockPizza2 = toPizzaObject(mockPizzaDocument);
+  const mockCursorRet = mockCursorResult({
+    hasNextPage: true,
+    cursorPosition: mockPizza.id,
+    totalCount: 1,
+    results: [mockPizza],
   });
 
+  //Test Pizzas Query
+  describe('getPizzas', (): void => {
+    describe('getPizzas with null cursor', (): void => {
+      const mockCursor = createMockCursor({ limit: 1 });
+      beforeEach(() => {
+        reveal(stubCursorProvider).getCursorResult.mockResolvedValue(mockCursorRet);
+      });
+      test('should call getPizzas', async () => {
+        await pizzaProvider.getPizzas(mockCursor);
+
+        expect(stubCursorProvider.getCursorResult).toHaveBeenCalledTimes(1);
+      });
+      test('should get a pizza', async () => {
+        const result = await pizzaProvider.getPizzas(mockCursor);
+        expect(result).toEqual(mockCursorRet);
+      });
+    });
+  });
   //Test Create Pizza
   describe('createPizza', (): void => {
     const createPizza = createMockPizzaDocument({

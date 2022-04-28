@@ -13,4 +13,10 @@ const mockSortToArray =
 const mockFilterToppingIds = (resultArray: any[], ids: any[]): any =>
   resultArray.filter((ele) => ids.includes(ele._id));
 
-export { mockToArray, mockSortToArray, mockFilterToppingIds };
+//Mock filter for .find using pagination
+const mockSortToArrayLimit =
+  (resultArray: any[], limit: any): any =>
+  (): any =>
+    ({ sort: () => ({ limit: (): any => ({ toArray: (): any => resultArray[limit] }) }) } as any);
+
+export { mockToArray, mockSortToArray, mockFilterToppingIds, mockSortToArrayLimit };
