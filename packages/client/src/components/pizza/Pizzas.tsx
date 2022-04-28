@@ -10,9 +10,9 @@ import PizzaModal from './PizzaModal';
 import { Pizza } from '../../types';
 
 //Import Queries
-import { useQuery } from '@apollo/client';
+import { InMemoryCache, useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
+import { GET_PIZZA_PAGE } from '../../hooks/graphql/pizza/queries/get-pizza-page';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -44,7 +44,27 @@ const Pizzas: React.FC = () => {
   //Create or Update pizza - default false=Update
   const [create, setCreate] = React.useState<boolean>(false);
 
-  const { loading: pizzaLoad, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
+  //Pagination
+  const pageSize = 9;
+  const [page, setPage] = React.useState(0); //OR PAGE NUMBER
+
+  function loadPage(pageSize: number): any {
+    console.log('load pizzas');
+    const {
+      loading: pizzaLoad,
+      data: pizzaDat,
+      error: pizzaErr,
+    } = useQuery(GET_PIZZA_PAGE, {
+      variables: { limit: pageSize },
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-first',
+    });
+    //RESET PAGE NUMBER if(pizzaDat?.hasNextPage)
+    console.log(pizzaDat?.pizzas.results);
+    return { pizzaLoad, pizzaDat: pizzaDat?.pizzas.results, pizzaErr };
+  }
+  const { pizzaLoad, pizzaDat, pizzaErr } = loadPage(pageSize);
+
   const { loading: toppingLoad, data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
 
   if (pizzaErr) {
@@ -90,19 +110,22 @@ const Pizzas: React.FC = () => {
       </Button>
       <PageHeader pageHeader={'Pizza'} />
 
-      <Box sx={{ flexGrow: 1 }}>
+      {/*       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           {PizzaList}
         </Grid>
       </Box>
+      <Button
+        onClick={() => loadPage(pageSize) } >More Pizzas</Button> */}
 
-      <PizzaModal
+      {/*   <PizzaModal
         selectedPizza={selectedPizza}
         open={open}
         setOpen={setOpen}
         allToppings={toppingDat}
         create={create}
-      />
+        setCreate={setCreate}
+      /> */}
     </Container>
   );
 };

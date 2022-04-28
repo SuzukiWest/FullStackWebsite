@@ -15,9 +15,9 @@ const toppingResolver = {
     toppings: async (pizza: { toppingIds: string[] }): Promise<Topping[]> => {
       return toppingProvider.getToppingsByIds(pizza.toppingIds);
     },
-    priceCents: async (pizza: { toppings: Topping[] }): Promise<number> => {
+    /*   priceCents: async (pizza: { toppings: Topping[] }): Promise<number> => {
       return toppingProvider.getPriceCents(pizza.toppings);
-    },
+    }, */
   },
 
   Mutation: {

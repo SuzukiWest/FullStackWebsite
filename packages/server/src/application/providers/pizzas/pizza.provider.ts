@@ -20,6 +20,7 @@ class PizzaProvider {
   ) {}
   //Queries---------------------------------------------------------------------------------------
   public async getPizzas(input: QueryInput): Promise<GetPizzasResponse> {
+    console.log('getPizzas');
     return this.cursorProvider.getCursorResult(input, this.collection);
   }
 

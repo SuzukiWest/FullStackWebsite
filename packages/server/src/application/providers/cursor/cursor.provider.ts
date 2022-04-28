@@ -20,6 +20,8 @@ class CursorProvider {
   }
 
   public async getCursorResult(input: QueryInput, pizzas: Collection<PizzaDocument>): Promise<GetPizzasResponse> {
+    console.log('getCursorResult');
+
     let { limit } = input;
     const index = this.getCursorIndex();
 
@@ -31,6 +33,7 @@ class CursorProvider {
       .sort({ _id: 1 })
       .limit(limit)
       .toArray();
+    console.log('Pizzas recieved from cursResults');
 
     //Remove any undefined objects and convert PizzaDoc to PizzaInp
     result.filter(Boolean);
@@ -49,6 +52,8 @@ class CursorProvider {
     }
     if (hasNextPage) this.setCursor(cursorPosition);
     else this.setCursor(this.resetIndex());
+
+    console.log('getCursorResultReturning');
 
     return { hasNextPage: hasNextPage, cursorPosition: cursorPosition, totalCount: totalCount, results: resultRet };
   }
