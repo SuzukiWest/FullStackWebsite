@@ -50,21 +50,20 @@ class PizzaProvider {
     const { id, name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc].filter(isString);
 
-    if (strInp.length != 0) validateStringInputs(strInp);
+    if (strInp.length > 0) validateStringInputs(strInp);
 
-    if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
+    this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
         $set: {
-          ...input,
           ...(name && { name: name }),
           ...(description && { description: description }),
           ...(imgSrc && { imgSrc: imgSrc }),
           ...(toppingIds && { toppingIds: toppingIds }),
         },
       },
-      { upsert: true, returnDocument: 'after' }
+      { returnDocument: 'after' }
     );
 
     if (!data.value) {

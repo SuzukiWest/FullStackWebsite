@@ -3,16 +3,16 @@ import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 
 //imports
-import { CREATE_PIZZA } from '../graphql/topping/mutations';
-import { GET_PIZZAS } from '../graphql/topping/queries/get-pizzas';
+import { CREATE_PIZZA, DELETE_PIZZA, UPDATE_PIZZA } from '../graphql/pizza/mutations/index';
+import { GET_PIZZAS } from '../graphql/pizza/queries/get-pizzas';
 
 interface UsePizzaMutationsOutput {
   onCreatePizza: (selectedPizza: any) => void;
-  //onUpdatePizza: (selectedPizza: any) => void;
-  //onDeletePizza: (selectedPizza: any) => Promise<void>;
+  onUpdatePizza: (selectedPizza: any) => void;
+  onDeletePizza: (selectedPizza: any) => Promise<void>;
 }
 
-const usePizzaMutations = (): void => {
+const usePizzaMutations = (): UsePizzaMutationsOutput => {
   const [createPizza] = useMutation(CREATE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
   const [deletePizza] = useMutation(DELETE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
   const [updatePizza] = useMutation(UPDATE_PIZZA);
@@ -20,16 +20,20 @@ const usePizzaMutations = (): void => {
   //useCallback to check
   const onCreatePizza = useCallback(
     (selectedPizza) => {
-      createPizza({
-        variables: {
-          createPizzaInput: {
-            name: selectedPizza.name,
-            description: selectedPizza.description,
-            imgSrc: selectedPizza.imgSrc,
-            toppingIds: selectedPizza.toppingIds,
+      try {
+        createPizza({
+          variables: {
+            createPizzaInput: {
+              name: selectedPizza.name,
+              description: selectedPizza.description,
+              imgSrc: selectedPizza.imgSrc,
+              toppingIds: selectedPizza.toppingIds,
+            },
           },
-        },
-      });
+        });
+      } catch (error) {
+        throw new Error('Create-Pizza input(client) not working');
+      }
     },
     [createPizza]
   );
@@ -73,3 +77,5 @@ const usePizzaMutations = (): void => {
   );
   return { onCreatePizza, onDeletePizza, onUpdatePizza };
 };
+
+export default usePizzaMutations;

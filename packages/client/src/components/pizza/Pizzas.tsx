@@ -1,22 +1,20 @@
+//React visual imports
 import React from 'react';
 import { Container, List, Theme, createStyles, Button } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
-import { makeStyles } from '@material-ui/styles';
 
-import { Pizza } from '../../types';
-import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
+import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
 
+//Pizza UI imports
 import PizzaItem from './PizzaItem';
-<<<<<<< HEAD
-=======
 import PizzaModal from './PizzaModal';
+import { Pizza } from '../../types';
+
 //Import Queries
+import { useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import { GET_PIZZAS } from '../../hooks/graphql/topping/queries/get-pizzas';
-import { ObjectId } from 'bson';
->>>>>>> Apr 20
+import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -41,65 +39,67 @@ const useStyles = makeStyles(({ typography }: Theme) =>
 const Pizzas: React.FC = () => {
   const classes = useStyles();
 
-<<<<<<< HEAD
-  const { loading, data, error } = useQuery(GET_PIZZAS);
-=======
   //Open/close Modals
   const [open, setOpen] = React.useState(false);
   //Select Pizza Item to open/close
-  const [selectedPizza, setSelectedPizza] = React.useState<Pizza>();
->>>>>>> Apr 20
+  const [selectedPizza, setSelectedPizza] = React.useState<Pizza | undefined>();
+  //Create or Update pizza - default false=Update
+  const [create, setCreate] = React.useState<boolean>(false);
 
-  if (error) {
-    <div className={classes.container} key="Pizza load error">
-      <h1>"Error Loading Pizzas Page"</h1>
-    </div>;
-  }
-  if (loading) {
+  const { loading: pizzaLoad, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
+  const { loading: toppingLoad, data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
+
+  if (pizzaErr) {
     return (
-      <div className={classes.container} key="Pizza loading">
-        <CardItemSkeleton data-testid={'pizza-list-loading'} />
+      <div className={classes.container} key="Pizza load error">
+        <h1>"Error Loading pizzaDat Page"</h1>
+      </div>
+    );
+  } else if (toppingErr) {
+    return (
+      <div className={classes.container} key="Pizza load error">
+        <h1>"Error Loading toppingDat for Pizzas Page"</h1>
       </div>
     );
   }
 
-<<<<<<< HEAD
-  const PizzaList = data?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} />
-=======
+  if (pizzaLoad || toppingLoad) {
+    return (
+      <div className={classes.container} key="Pizza loading">
+        <CardItemSkeleton pizzaDat-testid={'pizza-list-loading'} />
+      </div>
+    );
+  }
+
+  const choosePizza = (create: boolean, pizza?: Pizza): void => {
+    setCreate(create);
+    setSelectedPizza(pizza);
+    setOpen(true);
+  };
+
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem
-      pizzaDat-testid={`pizza-item-${pizza?.id}`}
-      key={pizza.id}
-      pizza={pizza}
-      selectPizza={selectPizza}
-      onClick={(): void => selectPizza(pizza)}
-    />
->>>>>>> Apr 20
+    <PizzaItem key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
   ));
 
   return (
     <Container maxWidth="md">
       <Button
         onClick={(): void => {
-          selectPizza(undefined);
+          choosePizza(true, selectedPizza || undefined);
         }}
       >
         Create Pizza
       </Button>
       <PageHeader pageHeader={'Pizza'} />
       <List>{PizzaList}</List>
-<<<<<<< HEAD
-=======
 
       <PizzaModal
         selectedPizza={selectedPizza}
-        selectPizza={selectPizza}
         open={open}
         setOpen={setOpen}
-        allToppings={toppingDat.toppings}
+        allToppings={toppingDat?.toppings}
+        create={create}
       />
->>>>>>> Apr 20
     </Container>
   );
 };

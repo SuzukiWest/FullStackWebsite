@@ -32,10 +32,12 @@ class ToppingProvider {
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
-  public async validateToppings(toppingIds: string[]): Promise<void> {
-    const toppingObjects = await this.getToppingsByIds(toppingIds);
+  public async validateToppings(toppingIds: string[] | null | undefined): Promise<void> {
+    this.emptyArrayCheck(toppingIds!);
 
-    if (toppingIds.length != toppingObjects.length) throw new Error('Missing requested topping(s)');
+    const toppingObjects = await this.getToppingsByIds(toppingIds!);
+
+    if (toppingIds!.length != toppingObjects.length) throw new Error('Missing requested topping(s)');
   }
 
   public async createTopping(input: CreateToppingInput): Promise<Topping> {
