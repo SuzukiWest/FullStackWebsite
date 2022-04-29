@@ -1,11 +1,10 @@
-import { ImageListItem, ListItem, ListItemText } from '@material-ui/core';
+import { Button, ImageListItem, ListItem, ListItemText } from '@material-ui/core';
 import CardItem from '../common/CardItem';
 import { Pizza, Topping } from '../../types';
 import { List } from '@material-ui/core';
 import toDollars from '../../lib/format-dollars';
 
-interface PizzaItemProps {
-  key: any;
+export interface PizzaItemProps {
   pizza: Pizza;
   choosePizza: any;
 }
@@ -14,40 +13,52 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
   const pizzaPrice = pizza.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
 
   const listToppings = pizza.toppings.map((topping: Topping) => (
-    <ListItem key={topping.id} value={topping.name}>
+    <ListItem
+      data-testid={'pizza-toppingList-${pizza?.id}-topping-${topping.id}'}
+      key={topping.id}
+      value={topping.name}
+    >
       {topping.name}
     </ListItem>
   ));
 
   return (
-    <CardItem
-      {...props}
+    <Button
       onClick={(): void => {
         choosePizza(false, pizza);
       }}
     >
-      <List>
-        <ListItem key={`pizza-name-${pizza?.name}`}>
-          <ListItemText primary={pizza?.name + ' Pizza'} />
-        </ListItem>
+      <CardItem {...props}>
+        <List>
+          <ListItemText
+            primary={pizza?.name + ' Pizza'}
+            key={`pizza-name-${pizza?.name}`}
+            data-testid={`pizza-name-${pizza?.id}`}
+          />
 
-        <ListItem key={`pizza-description-${pizza?.description}`}>
-          <ListItemText primary={'Description:' + pizza?.description} />
-        </ListItem>
+          <ListItemText
+            primary={'Description:' + pizza?.description}
+            key={`pizza-description-${pizza?.description}`}
+            data-testid={`pizza-description-${pizza?.id}`}
+          />
 
-        <ListItem>
-          <h4>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
-        </ListItem>
+          <ListItemText key={`pizza-price-${pizza?.id}`}>
+            <h4 data-testid={`pizza-price-${pizza?.id}`}>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
+          </ListItemText>
 
-        <ListItem key={'pizza-toppings-${pizza?.id}'}>
-          <ListItemText primary="Toppings" secondary={listToppings} />
-        </ListItem>
+          <ListItemText
+            primary="Toppings"
+            data-testid={'pizza-toppingList-Title-${pizza?.id}'}
+            key={'pizza-toppingList-Title-${pizza?.id}'}
+          />
+          {listToppings}
 
-        <ImageListItem key={'pizza-imgSrc-${pizza?.imgSrc}'}>
-          <img src={pizza?.imgSrc} alt={'No Image'} width="50%" height="25%" />
-        </ImageListItem>
-      </List>
-    </CardItem>
+          <ImageListItem data-testid={'pizza-imgSrc-${pizza?.imgSrc}'} key={'pizza-imgSrc-${pizza?.imgSrc}'}>
+            <img src={pizza?.imgSrc} alt={pizza?.name} width="50%" height="25%" />
+          </ImageListItem>
+        </List>
+      </CardItem>
+    </Button>
   );
 };
 
