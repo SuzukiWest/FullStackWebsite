@@ -77,6 +77,7 @@ describe('Pizzas', () => {
       expect($checkLoading()).toBeTruthy;
       expect($checkLoading()).toBeVisible;
     });
+    mockPizzasQuery(testPizzaList);
 
     const { $findPizzaItems } = renderPizzaList();
     await waitFor(() => expect($findPizzaItems()).resolves.toHaveLength(2));
