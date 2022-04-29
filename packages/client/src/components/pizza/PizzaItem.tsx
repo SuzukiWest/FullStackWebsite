@@ -11,6 +11,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  CardHeader,
 } from '@material-ui/core';
 import { Pizza, Topping } from '../../types';
 //Helper function imports
