@@ -1,23 +1,6 @@
 //React visual imports
 import React from 'react';
-<<<<<<< HEAD
 import { Container, Theme, createStyles, Button, Box, Grid } from '@material-ui/core';
-=======
-import {
-  Container,
-  List,
-  Theme,
-  createStyles,
-  Button,
-  Box,
-  Grid,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-} from '@material-ui/core';
-import { useQuery } from '@apollo/client';
->>>>>>> PizzaItem to Card
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 
@@ -78,12 +61,10 @@ const Pizzas: React.FC = () => {
     );
   }
 
-  while (pizzaLoad || toppingLoad) {
-
+  if (pizzaLoad || toppingLoad) {
     <div className={classes.container} key="Pizza loading message">
       <h1 data-testid={'pizza-loading'}>Loading Pizzas...</h1>
-    </div>
-
+    </div>;
   }
 
   const choosePizza = (create: boolean, pizza?: Pizza): void => {
@@ -94,7 +75,7 @@ const Pizzas: React.FC = () => {
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
     <Grid item xs={4} data-testid={'pizza-griditem-${pizza?.id}'}>
-      <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} selectPizza={selectPizza} />
+      <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
     </Grid>
   ));
 
@@ -110,7 +91,7 @@ const Pizzas: React.FC = () => {
       <PageHeader pageHeader={'Pizza'} />
 
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+        <Grid data-testid={`pizza-grid`} container spacing={2}>
           {PizzaList}
         </Grid>
       </Box>

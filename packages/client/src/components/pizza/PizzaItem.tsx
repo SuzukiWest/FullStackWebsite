@@ -1,5 +1,4 @@
 import {
-<<<<<<< HEAD
   ListItem,
   Typography,
   Card,
@@ -9,22 +8,8 @@ import {
   List,
   CardActionArea,
 } from '@material-ui/core';
-=======
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  ImageListItem,
-  ListItem,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
-import CardItem from '../common/CardItem';
->>>>>>> PizzaItem to Card
 import { Pizza, Topping } from '../../types';
 import toDollars from '../../lib/format-dollars';
-import { separateOperations } from 'graphql';
 
 export interface PizzaItemProps {
   pizza: Pizza;
@@ -36,8 +21,8 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
 
   const listToppings = pizza.toppings.map((topping: Topping) => (
     <ListItem
-      data-testid={'pizza-toppingList-${pizza?.id}-topping-${topping.id}'}
-      key={topping.id}
+      data-testid={'pizza-toppingList-${pizza.id}-topping-${topping.id}'}
+      key={'${pizza.id}-${topping.id}'}
       value={topping.name}
     >
       {topping.name}
@@ -45,29 +30,29 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
   ));
 
   return (
-    <Card data-testid={'pizzaItem-test-card'} {...props}>
-      <CardActionArea data-testid={`pizza-button-${pizza?.id}`} onClick={(): void => selectPizza(false, pizza)}>
+    <Card data-testid={'pizzaItem-test-card-${pizza.id}'} {...props}>
+      <CardActionArea data-testid={`pizza-button-${pizza.id}`} onClick={(): void => choosePizza(false, pizza)}>
         <CardHeader
-          data-testid={`pizza-header-${pizza?.id}`}
-          title={pizza?.name + ' Pizza'}
-          subheader={pizza?.description}
+          data-testid={`pizza-header-${pizza.id}`}
+          title={pizza.name + ' Pizza'}
+          subheader={pizza.description}
         />
 
         <CardMedia
-          data-testid={'pizza-imgSrc-${pizza?.imgSrc}'}
+          data-testid={'pizza-imgSrc-${pizza.imgSrc}'}
           component="img"
           height="194"
           image={pizza?.imgSrc}
           alt="Image missing"
         />
 
-        <CardContent data-testid={`pizza-contentSection-${pizza?.id}`}>
+        <CardContent data-testid={`pizza-contentSection-${pizza.id}`}>
           <Typography data-testid={'pizza-price-${pizza.id}'}>
             Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}
           </Typography>
 
-          <Typography data-testid={'pizza-toppings-title-${pizza?.id}'}>Toppings</Typography>
-          <List data-testid={'pizza-toppings-list-${pizza?.id}'}>{listToppings}</List>
+          <Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>
+          <List data-testid={'pizza-toppings-list-${pizza.id}'}>{listToppings}</List>
         </CardContent>
       </CardActionArea>
     </Card>
