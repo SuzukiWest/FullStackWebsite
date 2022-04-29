@@ -74,8 +74,8 @@ const Pizzas: React.FC = () => {
   };
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <Grid item xs={4} data-testid={'pizza-griditem-${pizza?.id}'}>
-      <PizzaItem data-testid={`pizza-item-${pizza?.id}`} key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
+    <Grid item xs={4} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
+      <PizzaItem data-testid={`pizza-item-${pizza.id}`} pizza={pizza} choosePizza={choosePizza} />
     </Grid>
   ));
 
@@ -91,7 +91,7 @@ const Pizzas: React.FC = () => {
       <PageHeader pageHeader={'Pizza'} />
 
       <Box sx={{ flexGrow: 1 }}>
-        <Grid data-testid={`pizza-grid`} container spacing={2}>
+        <Grid container spacing={2}>
           {PizzaList}
         </Grid>
       </Box>

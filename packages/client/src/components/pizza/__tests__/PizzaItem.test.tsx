@@ -19,7 +19,8 @@ describe('PizzaItem', () => {
       $getToppings: () => screen.getAllByTestId(/^pizza-toppings/),
       $getImgSrc: () => screen.getByTestId(/^pizza-imgSrc/),
 
-      $getButtons: () => screen.getByRole('button'),
+      $getButtons: () => screen.getByTestId(/^pizza-button/),
+      //$getButtons: () => screen.getByRole('button'),
     };
   };
 
