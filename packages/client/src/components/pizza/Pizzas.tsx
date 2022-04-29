@@ -4,7 +4,6 @@ import { Container, List, Theme, createStyles, Button } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
-import CardItemSkeleton from '../common/CardItemSkeleton';
 
 //Pizza UI imports
 import PizzaItem from './PizzaItem';
@@ -52,23 +51,21 @@ const Pizzas: React.FC = () => {
   if (pizzaErr) {
     return (
       <div className={classes.container} key="Pizza load error">
-        <h1>"Error Loading pizzaDat Page"</h1>
+        <h1>Error Loading pizza Data</h1>
       </div>
     );
   } else if (toppingErr) {
     return (
       <div className={classes.container} key="Pizza load error">
-        <h1>"Error Loading toppingDat for Pizzas Page"</h1>
+        <h1>Error Loading toppings for Pizza Page</h1>
       </div>
     );
   }
 
   if (pizzaLoad || toppingLoad) {
-    return (
-      <div className={classes.container} key="Pizza loading">
-        <CardItemSkeleton pizzaDat-testid={'pizza-list-loading'} />
-      </div>
-    );
+    <div className={classes.container} key="Pizza loading message">
+      <h1 data-testid={'pizza-loading'}>Loading Pizzas...</h1>
+    </div>;
   }
 
   const choosePizza = (create: boolean, pizza?: Pizza): void => {
@@ -78,26 +75,26 @@ const Pizzas: React.FC = () => {
   };
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
+    <PizzaItem data-testid={`pizza-item-${pizza.id}`} key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
   ));
 
   return (
     <Container maxWidth="md">
       <Button
         onClick={(): void => {
-          choosePizza(true, selectedPizza || undefined);
+          choosePizza(true, undefined);
         }}
       >
         Create Pizza
       </Button>
       <PageHeader pageHeader={'Pizza'} />
-      <List>{PizzaList}</List>
+      <List data-testid={'pizza-list'}>{PizzaList}</List>
 
       <PizzaModal
         selectedPizza={selectedPizza}
         open={open}
         setOpen={setOpen}
-        allToppings={toppingDat?.toppings}
+        allToppings={toppingDat}
         create={create}
       />
     </Container>

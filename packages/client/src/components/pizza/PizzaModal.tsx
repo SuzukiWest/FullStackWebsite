@@ -32,7 +32,7 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
   //Build topping checklist
-  let ToppingList = allToppings.map((topping: Topping) => (
+  let ToppingList = allToppings?.toppings.map((topping: Topping) => (
     <label>
       <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
       {topping.name}
