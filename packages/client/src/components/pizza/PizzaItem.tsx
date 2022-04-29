@@ -7,9 +7,13 @@ import {
   CardHeader,
   List,
   CardActionArea,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from '@material-ui/core';
 import { Pizza, Topping } from '../../types';
 import toDollars from '../../lib/format-dollars';
+import React from 'react';
 
 export interface PizzaItemProps {
   pizza: Pizza;
@@ -50,11 +54,19 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
           <Typography data-testid={'pizza-price-${pizza.id}'}>
             Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}
           </Typography>
-
-          <Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>
-          <List data-testid={'pizza-toppings-list-${pizza.id}'}>{listToppings}</List>
         </CardContent>
       </CardActionArea>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>}
+          aria-controls="toppingList"
+          id="toppings"
+        ></AccordionSummary>
+        <AccordionDetails>
+          <List data-testid={'pizza-toppings-list-${pizza.id}'}>{listToppings}</List>
+        </AccordionDetails>
+      </Accordion>
     </Card>
   );
 };
