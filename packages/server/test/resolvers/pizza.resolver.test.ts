@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 import { gql } from 'apollo-server-core';
 import { toppingResolver } from '../../src/application/resolvers/topping.resolver';
 import { typeDefs } from '../../src/application/schema';
+=======
+import { getDescription } from 'graphql';
+import { pizzaProvider } from 'src/application/providers';
+import { toppingResolver } from 'src/application/resolvers/topping.resolver';
+import { typeDefs } from 'src/application/schema';
+>>>>>>> provider finished and half of resolver
 import {
   MutationCreatePizzaArgs,
   MutationDeletePizzaArgs,
   MutationUpdatePizzaArgs,
+<<<<<<< HEAD
 } from '../../src/application/schema/types/schema';
 import { TestClient } from '../helpers/client.helper';
 import { createMockPizza, createMockPizzaInp, createMockTopping } from '../helpers/pizza.helper';
@@ -24,6 +32,20 @@ const mockPizza = createMockPizza({
   toppings: [mockTopping],
   priceCents: mockTopping.priceCents,
 });
+=======
+} from 'src/application/schema/types/schema';
+import { TestClient } from 'test/helpers/client.helper';
+import { createMockPizza } from 'test/helpers/pizza.helper';
+import { pizzaResolver } from '../../src/application/resolvers/pizza.resolver';
+
+let client: TestClient;
+
+jest.mock('../../src/applications/database', () => ({
+  setupDb: (): any => ({ collection: (): any => jest.fn() }),
+}));
+
+const mockPizza = createMockPizza();
+>>>>>>> provider finished and half of resolver
 
 beforeAll(async (): Promise<void> => {
   client = new TestClient(typeDefs, [pizzaResolver, toppingResolver]);
@@ -42,7 +64,11 @@ describe('pizzaResolver', (): void => {
             id
             name
             description
+<<<<<<< HEAD
             imgSrc
+=======
+            ImgSrc
+>>>>>>> provider finished and half of resolver
             toppings {
               id
               name
@@ -53,6 +79,7 @@ describe('pizzaResolver', (): void => {
         }
       `;
 
+<<<<<<< HEAD
       describe('should get all pizzas', () => {
         beforeEach(async (): Promise<void> => {
           jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(mockPizza.priceCents);
@@ -85,6 +112,28 @@ describe('pizzaResolver', (): void => {
           expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
           expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
         });
+=======
+      test('should get all pizzas', async () => {
+        jest.spyOn(pizzaProvider, 'getPizzas').mockResolvedValue([mockPizza]);
+
+        const result = await client.query({ query });
+
+        expect(result.data).toEqual({
+          pizzas: [
+            {
+              __typename: 'Pizza',
+              id: mockPizza.id,
+              name: mockPizza.name,
+              description: mockPizza.description,
+              imgSrc: mockPizza.ImgSrc,
+              toppings: mockPizza.toppings,
+              priceCents: mockPizza.priceCents, //CHECK IF SUPPOSED TO CALL TOPPINGRESOLVER FOR THESE
+            },
+          ],
+        });
+
+        expect(pizzaProvider.getPizzas).toHaveBeenCalledTimes(1);
+>>>>>>> provider finished and half of resolver
       });
     });
   });
@@ -97,6 +146,7 @@ describe('pizzaResolver', (): void => {
           createPizza(input: $input) {
             name
             description
+<<<<<<< HEAD
             imgSrc
             toppings {
               id
@@ -138,11 +188,42 @@ describe('pizzaResolver', (): void => {
         },
       };
       test('should call create pizza when passed valid input', async () => {
+=======
+            ImgSrc
+            toppingIds
+          }
+        }
+      `;
+
+      const validPizza = createMockPizza({
+        name: 'test pizza',
+        description: 'description 1',
+        ImgSrc: 'img 1',
+        toppings: [],
+        priceCents: 250,
+      }); //INPUT TOPPING OBJECTS
+
+      beforeEach(() => {
+        jest.spyOn(pizzaProvider, 'createPizza').mockResolvedValue(validPizza); //COMPARE PIZZA VS _PIZZA AND WHERE TO USE EACH
+      });
+
+      test('should call create pizza when passed valid input', async () => {
+        const variables: MutationCreatePizzaArgs = {
+          input: {
+            name: validPizza.name,
+            description: validPizza.description,
+            ImgSrc: validPizza.ImgSrc,
+            toppingIds: validPizza.toppings.map((topping) => topping.id),
+          },
+        };
+
+>>>>>>> provider finished and half of resolver
         const result = await client.mutate({ mutation, variables });
 
         expect(result.data).toEqual({
           createPizza: {
             __typename: 'Pizza',
+<<<<<<< HEAD
             name: createdPizza.name,
             description: createdPizza.description,
             imgSrc: createdPizza.imgSrc,
@@ -160,14 +241,27 @@ describe('pizzaResolver', (): void => {
         expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
         expect(pizzaProvider.createPizza).toHaveBeenCalledWith(variables.input);
       });
+=======
+            name: validPizza.name,
+            description: validPizza.description,
+            ImgSrc: validPizza.ImgSrc,
+            toppingIds: validPizza.toppings.map((topping) => topping.id),
+          },
+        });
+      });
+>>>>>>> provider finished and half of resolver
     });
 
     describe('deletePizza', () => {
       const mutation = gql`
         mutation ($input: DeletePizzaInput!) {
+<<<<<<< HEAD
           deletePizza(input: $input) {
             id
           }
+=======
+          deletePizza(input: $input)
+>>>>>>> provider finished and half of resolver
         }
       `;
 
@@ -190,6 +284,7 @@ describe('pizzaResolver', (): void => {
           deletePizza: mockPizza.id,
         });
       });
+<<<<<<< HEAD
       test('should return deleted topping id', async () => {
         const result = await client.mutate({ mutation, variables });
 
@@ -267,6 +362,32 @@ describe('pizzaResolver', (): void => {
           });
         });
       });
+=======
+    });
+
+    describe('updatePizza', () => {
+      const mutation = gql`
+        mutation ($input: UpdatePizzaInput!) {
+          updatePizza(input: $input) {
+            id
+            name
+            description
+            ImgSrc
+            toppings
+            priceCents
+          }
+        }
+      `;
+      const updatedPizza = createMockPizza({
+        name: 'test pizza',
+        description: 'description 1',
+        ImgSrc: 'img 1',
+        toppings: [],
+        priceCents: 250,
+      });
+
+      const variables: MutationUpdatePizzaArgs = { input: { id: mockPizza.id, name: updatedPizza.name } };
+>>>>>>> provider finished and half of resolver
     });
   });
 });

@@ -35,10 +35,10 @@ const PizzaModal = ({
   selectPizza,
   open,
   setOpen,
-  setCreate,
   create,
   allToppings,
 }: PizzaModalProps): JSX.Element => {
+
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
   //Build topping checklist
@@ -95,6 +95,7 @@ const PizzaModal = ({
               <Button
                 onClick={(): void => {
                   if (selectedPizza) onDeletePizza(selectedPizza);
+
                   setOpen(false);
                 }}
               >

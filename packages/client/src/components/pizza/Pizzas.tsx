@@ -1,6 +1,7 @@
 //React visual imports
 import React from 'react';
 import { Container, List, Theme, createStyles, Button } from '@material-ui/core';
+
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
@@ -14,6 +15,7 @@ import { Pizza } from '../../types';
 import { useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
 import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
+
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -38,6 +40,7 @@ const useStyles = makeStyles(({ typography }: Theme) =>
 const Pizzas: React.FC = () => {
   const classes = useStyles();
 
+
   //Open/close Modals
   const [open, setOpen] = React.useState(false);
   //Select Pizza Item to open/close
@@ -47,6 +50,7 @@ const Pizzas: React.FC = () => {
 
   const { loading: pizzaLoad, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
   const { loading: toppingLoad, data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
+
 
   if (pizzaErr) {
     return (
@@ -83,6 +87,7 @@ const Pizzas: React.FC = () => {
       selectPizza={selectPizza}
       setCreate={setCreate}
     />
+
   ));
 
   return (
@@ -105,8 +110,8 @@ const Pizzas: React.FC = () => {
         setOpen={setOpen}
         allToppings={toppingDat.toppings}
         create={create}
-        setCreate={setCreate}
       />
+
     </Container>
   );
 };
