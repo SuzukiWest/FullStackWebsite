@@ -10,6 +10,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Button,
 } from '@material-ui/core';
 import { Pizza, Topping } from '../../types';
 import toDollars from '../../lib/format-dollars';
@@ -57,13 +58,16 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
         </CardContent>
       </CardActionArea>
 
-      <Accordion>
+      <Accordion data-testid={`pizza-toppingExpand-${pizza.id}`}>
         <AccordionSummary
-          expandIcon={<Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>}
+          data-testid={`pizza-toppingExpandTitle-${pizza.id}`}
+          expandIcon={<Button>^</Button>}
           aria-controls="toppingList"
           id="toppings"
-        ></AccordionSummary>
-        <AccordionDetails>
+        >
+          <Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>
+        </AccordionSummary>
+        <AccordionDetails data-testid={`pizza-toppingExpandContent-${pizza.id}`}>
           <List data-testid={'pizza-toppings-list-${pizza.id}'}>{listToppings}</List>
         </AccordionDetails>
       </Accordion>
