@@ -5,14 +5,12 @@ import { List } from '@material-ui/core';
 import toDollars from '../../lib/format-dollars';
 
 interface PizzaItemProps {
-  id: any;
   key: any;
   pizza: Pizza;
-  selectPizza: any;
-  setCreate: any;
+  choosePizza: any;
 }
 
-const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, setCreate, ...props }: PizzaItemProps) => {
+const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: PizzaItemProps) => {
   const pizzaPrice = pizza.toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
 
   const listToppings = pizza.toppings.map((topping: Topping) => (
@@ -25,8 +23,7 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, selectPizza, setCreate, ..
     <CardItem
       {...props}
       onClick={(): void => {
-        selectPizza(pizza);
-        setCreate(false);
+        choosePizza(false, pizza);
       }}
     >
       <List>

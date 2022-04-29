@@ -2,6 +2,7 @@
 import { ObjectId, Collection } from 'mongodb';
 import { PizzaDocument, toPizzaObject, PizzaInp } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
+import { toppingProvider } from '..';
 
 //Input Types
 import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
@@ -51,7 +52,7 @@ class PizzaProvider {
 
     if (strInp.length > 0) validateStringInputs(strInp);
 
-    if (toppingIds) this.toppingProvider.validateToppings(toppingIds);
+    this.toppingProvider.validateToppings(toppingIds);
     const data = await this.collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {

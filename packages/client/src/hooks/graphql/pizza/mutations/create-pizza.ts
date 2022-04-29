@@ -11,6 +11,7 @@ export const CREATE_PIZZA = gql`
         name
         priceCents
       }
+      priceCents
     }
   }
 `;

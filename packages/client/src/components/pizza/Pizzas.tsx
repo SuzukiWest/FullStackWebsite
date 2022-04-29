@@ -1,6 +1,7 @@
 //React visual imports
 import React from 'react';
 import { Container, List, Theme, createStyles, Button } from '@material-ui/core';
+
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 import CardItemSkeleton from '../common/CardItemSkeleton';
@@ -41,7 +42,7 @@ const Pizzas: React.FC = () => {
   //Open/close Modals
   const [open, setOpen] = React.useState(false);
   //Select Pizza Item to open/close
-  const [selectedPizza, setSelectedPizza] = React.useState<Pizza>();
+  const [selectedPizza, setSelectedPizza] = React.useState<Pizza | undefined>();
   //Create or Update pizza - default false=Update
   const [create, setCreate] = React.useState<boolean>(false);
 
@@ -70,27 +71,21 @@ const Pizzas: React.FC = () => {
     );
   }
 
-  const selectPizza = (pizza?: Pizza): void => {
+  const choosePizza = (create: boolean, pizza?: Pizza): void => {
+    setCreate(create);
     setSelectedPizza(pizza);
     setOpen(true);
   };
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem
-      id={`pizza-item-${pizza?.id}`}
-      key={pizza.id}
-      pizza={pizza}
-      selectPizza={selectPizza}
-      setCreate={setCreate}
-    />
+    <PizzaItem key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
   ));
 
   return (
     <Container maxWidth="md">
       <Button
         onClick={(): void => {
-          setCreate(true);
-          selectPizza(undefined);
+          choosePizza(true, selectedPizza || undefined);
         }}
       >
         Create Pizza
@@ -100,12 +95,10 @@ const Pizzas: React.FC = () => {
 
       <PizzaModal
         selectedPizza={selectedPizza}
-        selectPizza={setSelectedPizza}
         open={open}
         setOpen={setOpen}
-        allToppings={toppingDat.toppings}
+        allToppings={toppingDat?.toppings}
         create={create}
-        setCreate={setCreate}
       />
     </Container>
   );

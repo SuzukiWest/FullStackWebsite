@@ -22,23 +22,13 @@ const style = {
 
 interface PizzaModalProps {
   selectedPizza?: any;
-  selectPizza: any;
   open: boolean;
   setOpen: any;
   allToppings: any;
-  setCreate: any;
   create: any;
 }
 
-const PizzaModal = ({
-  selectedPizza,
-  selectPizza,
-  open,
-  setOpen,
-  setCreate,
-  create,
-  allToppings,
-}: PizzaModalProps): JSX.Element => {
+const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: PizzaModalProps): JSX.Element => {
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
   //Build topping checklist
@@ -50,14 +40,7 @@ const PizzaModal = ({
   ));
 
   return (
-    <Modal
-      open={open}
-      onClose={(): void => {
-        setOpen(false);
-        setCreate(false);
-        selectPizza(undefined);
-      }}
-    >
+    <Modal open={open}>
       <Box sx={style}>
         <Formik
           initialValues={{
@@ -95,6 +78,7 @@ const PizzaModal = ({
               <Button
                 onClick={(): void => {
                   if (selectedPizza) onDeletePizza(selectedPizza);
+
                   setOpen(false);
                 }}
               >
