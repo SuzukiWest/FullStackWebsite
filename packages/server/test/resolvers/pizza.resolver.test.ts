@@ -42,7 +42,6 @@ const mockPizzaPage = createPizzaPage({
   totalCount: 1,
   results: [mockPizza],
 });
-const emptyIndex = '000000000000000000000000';
 
 beforeAll(async (): Promise<void> => {
   client = new TestClient(typeDefs, [pizzaResolver, toppingResolver]);

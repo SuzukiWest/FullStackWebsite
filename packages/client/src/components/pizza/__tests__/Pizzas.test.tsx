@@ -6,7 +6,14 @@ import { Pizza } from '../../../types';
 import { server } from '../../../lib/test/msw-server';
 import { createTestPizza, createTestTopping } from '../../../lib/test/helper/pizza';
 import Pizzas from '../Pizzas';
+import userEvent from '@testing-library/user-event';
 
+const testTopping = createTestTopping();
+const testPizza1 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
+const testPizza2 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
+const testPizza3 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
+
+const testPizzaList = [testPizza1, testPizza2, testPizza3];
 describe('Pizzas', () => {
   const renderPizzaList = () => {
     //Render test PizzaList
@@ -17,19 +24,24 @@ describe('Pizzas', () => {
 
       //Functions to check render
       $findPizzaItems: () => screen.findAllByTestId(/^pizza-item/),
-      $checkLoading: () => screen.queryByTestId(/pizza-loading/),
+      $checkLoading: () => screen.findByTestId(/pizza-loading/),
+      //Buttons
+      $createButton: () => screen.findByTestId(/pizza-createButton/),
+      $nextPageButton: () => screen.findByTestId(/pizza-getPage/),
     };
   };
 
-  const testTopping = createTestTopping();
-  const mockPageQuery = (data: Partial<Pizza[]>, limit: number) => {
+  const mockPageQuery = (data: Partial<Pizza[]>) => {
     server.use(
-      graphql.query('pizzaPage', ({ variables: { limit } }, response, context) => {
+      graphql.query('pizzaPage', (request, response, context) => {
         return response(
           context.data({
             loading: false,
             page: {
-              results: [...data].slice(0, limit),
+              totalCount: 1,
+              hasNextPage: false,
+              cursorPosition: testPizza1.id,
+              results: [...data].slice(0, 1),
             },
           })
         );
@@ -47,18 +59,23 @@ describe('Pizzas', () => {
 
   const loadPizzasQuery = (data: Partial<Pizza[]>) => {
     server.use(
-      graphql.query('Pizzas', (_request, response, context) => {
+      graphql.query('pizzaPage', (_request, response, context) => {
         return response(
           context.data({
             loading: true,
-            pizzas: [...data],
+            page: {
+              totalCount: 1,
+              hasNextPage: false,
+              cursorPosition: testPizza1.id,
+              results: [...data].slice(0, 2),
+            },
           })
         );
       }),
       graphql.query('Toppings', (_request, response, context) => {
         return response(
           context.data({
-            loading: false,
+            loading: true,
             toppings: [testTopping],
           })
         );
@@ -66,21 +83,18 @@ describe('Pizzas', () => {
     );
   };
 
-  const testPizza1 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
-  const testPizza2 = createTestPizza({ toppings: [testTopping], priceCents: testTopping.priceCents });
-
-  const testPizzaList = [testPizza1, testPizza2];
-
-  test('should display load screen and then list of 2 pizzas', async () => {
+  test('should display load screen', async () => {
     await waitFor(() => {
-      const { $checkLoading } = renderPizzaList();
       loadPizzasQuery(testPizzaList);
+      const { $checkLoading } = renderPizzaList();
 
       expect($checkLoading()).toBeTruthy;
       expect($checkLoading()).toBeVisible;
     });
-    //Query a single pizza
-    mockPageQuery(testPizzaList, 1);
+  });
+
+  test('should display 2 pizzaItems', async () => {
+    mockPageQuery(testPizzaList);
 
     const { $findPizzaItems } = renderPizzaList();
     await waitFor(() => expect($findPizzaItems()).resolves.toHaveLength(1));

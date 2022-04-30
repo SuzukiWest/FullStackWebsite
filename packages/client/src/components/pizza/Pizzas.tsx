@@ -97,6 +97,7 @@ const Pizzas: React.FC = () => {
   return (
     <Container maxWidth="md">
       <Button
+        data-testid={'pizza-createButton'}
         onClick={(): void => {
           choosePizza(true, undefined);
         }}
@@ -112,6 +113,7 @@ const Pizzas: React.FC = () => {
       </Box>
 
       <Button
+        data-testid={'pizza-getPage'}
         onClick={(): void => {
           incPage();
           refetch();

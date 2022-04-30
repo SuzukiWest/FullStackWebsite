@@ -24,8 +24,8 @@ describe('pizzaProvider', (): void => {
   const mockPizzaDocument = createMockPizzaDocument({ toppingIds: [mockTopping.id] });
   const mockPizza = toPizzaObject(mockPizzaDocument);
 
-  const mockPizzaDocument2 = createMockPizzaDocument({ name: 'pizza2', toppingIds: [mockTopping.id] });
-  const mockPizza2 = toPizzaObject(mockPizzaDocument);
+  // const mockPizzaDocument2 = createMockPizzaDocument({ name: 'pizza2', toppingIds: [mockTopping.id] });
+  // const mockPizza2 = toPizzaObject(mockPizzaDocument);
   const mockCursorRet = mockCursorResult({
     hasNextPage: true,
     cursorPosition: mockPizza.id,
