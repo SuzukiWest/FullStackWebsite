@@ -87,15 +87,11 @@ export type Pizza = {
 
 export type Query = {
   __typename?: 'Query';
-  pizzas: GetPizzasResponse;
+  page: GetPizzasResponse;
   toppings: Array<Topping>;
 };
 
-export type QueryPizzasArgs = {
-  input: QueryInput;
-};
-
-export type QueryInput = {
+export type QueryPageArgs = {
   limit?: Maybe<Scalars['Int']>;
 };
 

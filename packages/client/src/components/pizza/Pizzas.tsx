@@ -10,7 +10,7 @@ import PizzaModal from './PizzaModal';
 import { Pizza } from '../../types';
 
 //Import Queries
-import { InMemoryCache, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
 import { GET_PIZZA_PAGE } from '../../hooks/graphql/pizza/queries/get-pizza-page';
 
@@ -45,26 +45,21 @@ const Pizzas: React.FC = () => {
   const [create, setCreate] = React.useState<boolean>(false);
 
   //Pagination
-  const pageSize = 9;
-  const [page, setPage] = React.useState(0); //OR PAGE NUMBER
+  const [page, setPage] = React.useState(1);
+  const incPage = () => {
+    // Update state with incremented value
+    if (pizzaDat.page.hasNextPage) setPage(page + 1);
+    else setPage(1);
+  };
+  //Number of pizzas per page
+  const limit = 3;
 
-  function loadPage(pageSize: number): any {
-    console.log('load pizzas');
-    const {
-      loading: pizzaLoad,
-      data: pizzaDat,
-      error: pizzaErr,
-    } = useQuery(GET_PIZZA_PAGE, {
-      variables: { limit: pageSize },
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-first',
-    });
-    //RESET PAGE NUMBER if(pizzaDat?.hasNextPage)
-    console.log(pizzaDat?.pizzas.results);
-    return { pizzaLoad, pizzaDat: pizzaDat?.pizzas.results, pizzaErr };
-  }
-  const { pizzaLoad, pizzaDat, pizzaErr } = loadPage(pageSize);
-
+  const {
+    loading: pizzaLoad,
+    data: pizzaDat,
+    error: pizzaErr,
+    refetch,
+  } = useQuery(GET_PIZZA_PAGE, { variables: { limit } });
   const { loading: toppingLoad, data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
 
   if (pizzaErr) {
@@ -93,7 +88,7 @@ const Pizzas: React.FC = () => {
     setOpen(true);
   };
 
-  const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
+  const PizzaList = pizzaDat?.page.results.map((pizza: Pizza) => (
     <Grid item xs={4} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
       <PizzaItem data-testid={`pizza-item-${pizza.id}`} pizza={pizza} choosePizza={choosePizza} />
     </Grid>
@@ -110,22 +105,28 @@ const Pizzas: React.FC = () => {
       </Button>
       <PageHeader pageHeader={'Pizza'} />
 
-      {/*       <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>
           {PizzaList}
         </Grid>
       </Box>
-      <Button
-        onClick={() => loadPage(pageSize) } >More Pizzas</Button> */}
 
-      {/*   <PizzaModal
+      <Button
+        onClick={(): void => {
+          incPage();
+          refetch();
+        }}
+      >
+        {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
+      </Button>
+
+      <PizzaModal
         selectedPizza={selectedPizza}
         open={open}
         setOpen={setOpen}
         allToppings={toppingDat}
         create={create}
-        setCreate={setCreate}
-      /> */}
+      />
     </Container>
   );
 };

@@ -10,14 +10,6 @@ const typeDefs = gql`
     priceCents: Int!
   }
 
-  type Query {
-    pizzas(input: QueryInput!): GetPizzasResponse!
-  }
-
-  input QueryInput {
-    limit: Int
-  }
-
   type GetPizzasResponse {
     totalCount: Int!
     hasNextPage: Boolean!
@@ -25,6 +17,9 @@ const typeDefs = gql`
     results: [Pizza!]!
   }
 
+  type Query {
+    page(limit: Int): GetPizzasResponse!
+  }
   type Mutation {
     createPizza(input: CreatePizzaInput!): Pizza!
     deletePizza(input: DeletePizzaInput!): ObjectID!

@@ -12,34 +12,27 @@ class ToppingProvider {
   }
 
   private emptyArrayCheck(array: any[]): void {
-    console.log('Topping Check');
     if (!array?.length) throw new Error('Empty input');
   }
 
   public async getToppingsByIds(ids: string[]): Promise<Topping[]> {
-    console.log('getToppingIds');
-
     this.emptyArrayCheck(ids);
+
     const objectIds = ids.map((id) => new ObjectId(id));
     const toppings = await this.collection
       .find({ _id: { $in: objectIds } })
       .sort({ name: 1 })
       .toArray();
-    console.log('toppings ret');
     return toppings.map(toToppingObject);
   }
 
-  public async getPriceCents(toppings: Topping[]): Promise<number> {
-    console.log('priceCents');
-    this.emptyArrayCheck(toppings);
-
-    return toppings.reduce((price, currentTopping) => price + currentTopping.priceCents, 0);
+  public async getPriceCents(ids: string[]): Promise<number> {
+    const toppings = await this.getToppingsByIds(ids);
+    return toppings.reduce((price, topping) => price + topping.priceCents, 0);
   }
 
   //Confirms toppings exist for Creation or Update of Pizza
   public async validateToppings(toppingIds: string[] | null | undefined): Promise<void> {
-    this.emptyArrayCheck(toppingIds!);
-
     const toppingObjects = await this.getToppingsByIds(toppingIds!);
 
     if (toppingIds!.length != toppingObjects.length) throw new Error('Missing requested topping(s)');

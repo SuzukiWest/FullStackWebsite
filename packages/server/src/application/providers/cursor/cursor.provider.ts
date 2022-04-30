@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
-import { GetPizzasResponse, QueryInput } from '../pizzas/pizza.provider.types';
+import { GetPizzasResponse } from '../pizzas/pizza.provider.types';
 
 class CursorProvider {
   private cursor: string;
@@ -19,21 +19,16 @@ class CursorProvider {
     return '000000000000000000000000';
   }
 
-  public async getCursorResult(input: QueryInput, pizzas: Collection<PizzaDocument>): Promise<GetPizzasResponse> {
-    console.log('getCursorResult');
-
-    let { limit } = input;
+  public async getCursorResult(limit: number, pizzas: Collection<PizzaDocument>): Promise<GetPizzasResponse> {
     const index = this.getCursorIndex();
 
     if (!limit) limit = 5;
-    else limit = limit;
 
     let result = await pizzas
       .find({ _id: { $gt: new ObjectId(index) } })
       .sort({ _id: 1 })
       .limit(limit)
       .toArray();
-    console.log('Pizzas recieved from cursResults');
 
     //Remove any undefined objects and convert PizzaDoc to PizzaInp
     result.filter(Boolean);
@@ -52,8 +47,6 @@ class CursorProvider {
     }
     if (hasNextPage) this.setCursor(cursorPosition);
     else this.setCursor(this.resetIndex());
-
-    console.log('getCursorResultReturning');
 
     return { hasNextPage: hasNextPage, cursorPosition: cursorPosition, totalCount: totalCount, results: resultRet };
   }

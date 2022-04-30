@@ -2,14 +2,7 @@ import { ObjectId } from 'mongodb';
 
 import { Pizza, Topping, GetPizzasResponse as PizzaResponse } from 'src/application/schema/types/schema';
 import { PizzaDocument, PizzaInp } from 'src/entities/pizza';
-import { GetPizzasResponse, QueryInput } from 'src/application/providers/pizzas/pizza.provider.types';
-
-const createMockCursor = (data?: Partial<QueryInput>): QueryInput => {
-  return {
-    limit: null,
-    ...data,
-  };
-};
+import { GetPizzasResponse } from 'src/application/providers/pizzas/pizza.provider.types';
 
 const mockCursorResult = (data?: Partial<GetPizzasResponse>): GetPizzasResponse => {
   return {
@@ -84,7 +77,6 @@ export {
   createMockPizzaDocument,
   createMockPizzaInp,
   createMockTopping,
-  createMockCursor,
   mockCursorResult,
   createPizzaPage,
 };

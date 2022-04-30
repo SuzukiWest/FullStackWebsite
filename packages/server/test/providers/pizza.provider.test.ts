@@ -1,10 +1,5 @@
 //Helper mock functions
-import {
-  createMockCursor,
-  createMockPizzaDocument,
-  createMockTopping,
-  mockCursorResult,
-} from '../helpers/pizza.helper';
+import { createMockPizzaDocument, createMockTopping, mockCursorResult } from '../helpers/pizza.helper';
 import { reveal, stub } from 'jest-auto-stub';
 
 //Provider/Type imports
@@ -41,7 +36,7 @@ describe('pizzaProvider', (): void => {
   //Test Pizzas Query
   describe('getPizzas', (): void => {
     describe('getPizzas with null cursor', (): void => {
-      const mockCursor = createMockCursor({ limit: 1 });
+      const mockCursor = 1;
       beforeEach(() => {
         reveal(stubCursorProvider).getCursorResult.mockResolvedValue(mockCursorRet);
       });

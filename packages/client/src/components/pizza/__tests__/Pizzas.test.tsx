@@ -22,13 +22,15 @@ describe('Pizzas', () => {
   };
 
   const testTopping = createTestTopping();
-  const mockPizzasQuery = (data: Partial<Pizza[]>) => {
+  const mockPageQuery = (data: Partial<Pizza[]>, limit: number) => {
     server.use(
-      graphql.query('Pizzas', (_request, response, context) => {
+      graphql.query('pizzaPage', ({ variables: { limit } }, response, context) => {
         return response(
           context.data({
             loading: false,
-            pizzas: [...data],
+            page: {
+              results: [...data].slice(0, limit),
+            },
           })
         );
       }),
@@ -77,9 +79,10 @@ describe('Pizzas', () => {
       expect($checkLoading()).toBeTruthy;
       expect($checkLoading()).toBeVisible;
     });
-    mockPizzasQuery(testPizzaList);
+    //Query a single pizza
+    mockPageQuery(testPizzaList, 1);
 
     const { $findPizzaItems } = renderPizzaList();
-    await waitFor(() => expect($findPizzaItems()).resolves.toHaveLength(2));
+    await waitFor(() => expect($findPizzaItems()).resolves.toHaveLength(1));
   });
 });

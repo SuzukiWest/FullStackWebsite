@@ -2,12 +2,12 @@ import { CreatePizzaInput, DeletePizzaInput, UpdatePizzaInput } from '../schema/
 import { pizzaProvider } from '../providers';
 import { Root } from '../schema/types/types';
 import { PizzaInp } from '../../../src/entities/pizza';
-import { GetPizzasResponse, QueryInput } from '../providers/pizzas/pizza.provider.types';
+import { GetPizzasResponse } from '../providers/pizzas/pizza.provider.types';
 
 const pizzaResolver = {
   Query: {
-    pizzas: async (_: Root, args: { input: QueryInput }): Promise<GetPizzasResponse> => {
-      return pizzaProvider.getPizzas(args.input);
+    page: async (_: Root, args: { limit: number }): Promise<GetPizzasResponse> => {
+      return pizzaProvider.getPizzas(args.limit);
     },
   },
 

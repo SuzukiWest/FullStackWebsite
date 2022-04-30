@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const GET_PIZZA_PAGE = gql`
-  query pizzaPage($input: QueryInput!) {
-    pizzas(input: $input) {
+  query pizzaPage($limit: Int) {
+    page(limit: $limit) {
       totalCount
       hasNextPage
       cursorPosition
@@ -16,6 +16,7 @@ const GET_PIZZA_PAGE = gql`
           name
           priceCents
         }
+        priceCents
       }
     }
   }

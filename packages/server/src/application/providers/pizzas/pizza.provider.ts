@@ -4,7 +4,7 @@ import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
 
 //Input Types
-import { CreatePizzaInput, UpdatePizzaInput, QueryInput, GetPizzasResponse } from './pizza.provider.types';
+import { CreatePizzaInput, UpdatePizzaInput, GetPizzasResponse } from './pizza.provider.types';
 
 //Helper function
 import validateStringInputs from '../../../lib/string-validator';
@@ -19,9 +19,8 @@ class PizzaProvider {
     private cursorProvider: CursorProvider
   ) {}
   //Queries---------------------------------------------------------------------------------------
-  public async getPizzas(input: QueryInput): Promise<GetPizzasResponse> {
-    console.log('getPizzas');
-    return this.cursorProvider.getCursorResult(input, this.collection);
+  public async getPizzas(limit: number): Promise<GetPizzasResponse> {
+    return this.cursorProvider.getCursorResult(limit, this.collection);
   }
 
   //Mutations---------------------------------------------------------------------------------------
