@@ -30,7 +30,3 @@ export interface GetPizzasResponse {
   totalCount: number;
   results: PizzaInp[];
 }
-
-export interface QueryInput {
-  limit: number | null;
-}

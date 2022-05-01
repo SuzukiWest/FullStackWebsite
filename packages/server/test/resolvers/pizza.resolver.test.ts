@@ -5,7 +5,6 @@ import {
   MutationCreatePizzaArgs,
   MutationDeletePizzaArgs,
   MutationUpdatePizzaArgs,
-  QueryPizzasArgs,
 } from '../../src/application/schema/types/schema';
 import { TestClient } from '../helpers/client.helper';
 import {
@@ -43,7 +42,6 @@ const mockPizzaPage = createPizzaPage({
   totalCount: 1,
   results: [mockPizza],
 });
-const emptyIndex = '000000000000000000000000';
 
 beforeAll(async (): Promise<void> => {
   client = new TestClient(typeDefs, [pizzaResolver, toppingResolver]);
@@ -57,8 +55,8 @@ describe('pizzaResolver', (): void => {
   describe('Query', () => {
     describe('pizzas', () => {
       const query = gql`
-        query ($input: QueryInput!) {
-          pizzas(input: $input) {
+        query ($limit: Int) {
+          page(limit: $limit) {
             totalCount
             hasNextPage
             cursorPosition
@@ -73,6 +71,7 @@ describe('pizzaResolver', (): void => {
                 name
                 priceCents
               }
+              priceCents
             }
           }
         }
@@ -80,10 +79,7 @@ describe('pizzaResolver', (): void => {
 
       describe('should get a pizza', () => {
         beforeEach(async (): Promise<void> => {});
-
-        const variables: QueryPizzasArgs = {
-          input: { limit: 1 },
-        };
+        const variables = { limit: 1 };
         test('should getPizza', async () => {
           jest.spyOn(cursorProvider, 'getCursorResult').mockResolvedValue(mockCursorRes);
 
@@ -94,7 +90,7 @@ describe('pizzaResolver', (): void => {
           const result = await client.query({ query, variables });
 
           expect(result.data).toEqual({
-            pizzas: {
+            page: {
               __typename: 'GetPizzasResponse',
               totalCount: mockPizzaPage.totalCount,
               hasNextPage: mockPizzaPage.hasNextPage,
@@ -103,14 +99,14 @@ describe('pizzaResolver', (): void => {
             },
           });
           expect(cursorProvider.getCursorResult).toHaveBeenCalledTimes(1);
-
-          expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
           expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
+          expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
         });
       });
     });
   });
 
+  //Mutations------------------------------------------------------------------------------------------------
   //Test Resolver Mutations
   describe('Mutation', () => {
     describe('createPizza', () => {

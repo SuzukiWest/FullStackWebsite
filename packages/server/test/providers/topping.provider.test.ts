@@ -16,18 +16,17 @@ describe('toppingProvider', (): void => {
   //Test Mocks
   const mockToppingDoc = createMockToppingDocument();
   const mockTopping = toToppingObject(mockToppingDoc);
-  const mockToppingDoc2 = createMockToppingDocument({ name: 'topping2', priceCents: 9000 });
+  const mockToppingDoc2 = createMockToppingDocument({ name: 'topping2', priceCents: 2 });
   const mockTopping2 = toToppingObject(mockToppingDoc2);
-  const mockToppingDoc3 = createMockToppingDocument({ name: 'topping3', priceCents: 9000 });
+  const mockToppingDoc3 = createMockToppingDocument({ name: 'topping3', priceCents: 3 });
   const mockTopping3 = toToppingObject(mockToppingDoc3);
+  const mockToppingDocuments = [mockToppingDoc, mockToppingDoc2, mockToppingDoc3];
   const mockToppings = [mockTopping, mockTopping2, mockTopping3];
 
   describe('Gets', (): void => {
     describe('getToppings', (): void => {
       beforeEach(() => {
-        reveal(stubToppingCollection).find.mockImplementation(
-          mockSortToArray([mockToppingDoc, mockToppingDoc2, mockToppingDoc3])
-        );
+        reveal(stubToppingCollection).find.mockImplementation(mockSortToArray(mockToppingDocuments));
       });
       test('should call find once', async () => {
         await toppingProvider.getToppings();
@@ -47,12 +46,12 @@ describe('toppingProvider', (): void => {
         reveal(stubToppingCollection).find.mockImplementation(
           mockSortToArray(
             //Replacement for mongo DB filter {_id:{$in:toppingIds}}
-            mockFilterToppingIds([mockToppingDoc, mockToppingDoc2, mockToppingDoc3], [mockToppingDoc2._id])
+            mockFilterToppingIds(mockToppingDocuments, [mockToppingDoc2._id])
           )
         );
       });
       test('should call functions once', async () => {
-        await toppingProvider.getToppingsByIds([mockTopping.id]);
+        await toppingProvider.getToppingsByIds([mockTopping2.id]);
 
         expect(stubToppingCollection.find).toHaveBeenCalledTimes(1);
       });
@@ -65,19 +64,21 @@ describe('toppingProvider', (): void => {
 
     describe('getPriceCents', (): void => {
       beforeEach(() => {
-        reveal(stubToppingCollection).find.mockImplementation(
-          mockSortToArray([mockToppingDoc, mockToppingDoc2, mockToppingDoc3])
-        );
+        reveal(stubToppingCollection).find.mockImplementation(mockSortToArray([mockToppingDoc, mockToppingDoc2]));
+        jest.spyOn(toppingProvider, 'getToppingsByIds');
       });
-      test('should get price of single topping', async () => {
-        const result = await toppingProvider.getPriceCents([mockTopping]);
+      test('should call getPrice', async () => {
+        await toppingProvider.getPriceCents([mockTopping.id]);
 
-        expect(result).toEqual(mockTopping.priceCents);
+        expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
+        expect(stubToppingCollection.find).toHaveBeenCalledTimes(1);
       });
-      test('should get price of multiple provided toppings', async () => {
-        const result = await toppingProvider.getPriceCents([mockTopping, mockTopping2]);
 
-        expect(result).toEqual(mockTopping.priceCents + mockTopping2.priceCents);
+      const mockPrice = mockTopping.priceCents + mockTopping2.priceCents;
+      test('should get price of toppings', async () => {
+        const result = await toppingProvider.getPriceCents([mockTopping.id, mockTopping2.id]);
+
+        expect(result).toEqual(mockPrice);
       });
     });
 

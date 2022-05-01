@@ -12,7 +12,7 @@ import { Pizza } from '../../types';
 //Import Queries
 import { useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
-import { GET_PIZZAS } from '../../hooks/graphql/pizza/queries/get-pizzas';
+import { GET_PIZZA_PAGE } from '../../hooks/graphql/pizza/queries/get-pizza-page';
 
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
@@ -44,7 +44,22 @@ const Pizzas: React.FC = () => {
   //Create or Update pizza - default false=Update
   const [create, setCreate] = React.useState<boolean>(false);
 
-  const { loading: pizzaLoad, data: pizzaDat, error: pizzaErr } = useQuery(GET_PIZZAS);
+  //Pagination
+  const [page, setPage] = React.useState(1);
+  const incPage = () => {
+    // Update state with incremented value
+    if (pizzaDat.page.hasNextPage) setPage(page + 1);
+    else setPage(1);
+  };
+  //Number of pizzas per page
+  const limit = 3;
+
+  const {
+    loading: pizzaLoad,
+    data: pizzaDat,
+    error: pizzaErr,
+    refetch,
+  } = useQuery(GET_PIZZA_PAGE, { variables: { limit } });
   const { loading: toppingLoad, data: toppingDat, error: toppingErr } = useQuery(GET_TOPPINGS);
 
   if (pizzaErr) {
@@ -73,7 +88,7 @@ const Pizzas: React.FC = () => {
     setOpen(true);
   };
 
-  const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
+  const PizzaList = pizzaDat?.page.results.map((pizza: Pizza) => (
     <Grid item xs={4} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
       <PizzaItem data-testid={`pizza-item-${pizza.id}`} pizza={pizza} choosePizza={choosePizza} />
     </Grid>
@@ -82,6 +97,7 @@ const Pizzas: React.FC = () => {
   return (
     <Container maxWidth="md">
       <Button
+        data-testid={'pizza-createButton'}
         onClick={(): void => {
           choosePizza(true, undefined);
         }}
@@ -95,6 +111,16 @@ const Pizzas: React.FC = () => {
           {PizzaList}
         </Grid>
       </Box>
+
+      <Button
+        data-testid={'pizza-getPage'}
+        onClick={(): void => {
+          incPage();
+          refetch();
+        }}
+      >
+        {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
+      </Button>
 
       <PizzaModal
         selectedPizza={selectedPizza}

@@ -17,7 +17,7 @@ const usePizzaMutations = (): UsePizzaMutationsOutput => {
   const [deletePizza] = useMutation(DELETE_PIZZA, { refetchQueries: [GET_PIZZAS, 'Pizzas'] });
   const [updatePizza] = useMutation(UPDATE_PIZZA);
 
-  //useCallback to check
+  //useCallback to check return
   const onCreatePizza = useCallback(
     (selectedPizza) => {
       try {

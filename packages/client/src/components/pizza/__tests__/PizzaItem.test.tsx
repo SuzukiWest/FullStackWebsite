@@ -19,8 +19,7 @@ describe('PizzaItem', () => {
       $getToppings: () => screen.getAllByTestId(/^pizza-toppings/),
       $getImgSrc: () => screen.getByTestId(/^pizza-imgSrc/),
 
-      $getButtons: () => screen.getByTestId(/^pizza-button/),
-      //$getButtons: () => screen.getByRole('button'),
+      $pizzaButton: () => screen.getByTestId(/^pizza-button/),
     };
   };
 
@@ -50,9 +49,9 @@ describe('PizzaItem', () => {
   });
 
   test('should call selectPizza when the pizza item is clicked', async () => {
-    const { $getButtons } = renderPizzaList(props);
+    const { $pizzaButton } = renderPizzaList(props);
 
-    userEvent.click($getButtons());
+    userEvent.click($pizzaButton());
 
     expect(props.choosePizza).toHaveBeenCalledTimes(1);
   });
