@@ -126,8 +126,9 @@ const Pizzas: React.FC = () => {
         selectedPizza={selectedPizza}
         open={open}
         setOpen={setOpen}
-        allToppings={toppingDat}
+        allToppings={toppingDat?.toppings}
         create={create}
+        setPizza={setSelectedPizza}
       />
     </Container>
   );

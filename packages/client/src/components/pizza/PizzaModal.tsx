@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Box } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
 
 import { Topping } from '../../types/schema';
 import usePizzaMutations from '../../hooks/pizza/use-pizza-mutations';
@@ -24,15 +25,32 @@ interface PizzaModalProps {
   selectedPizza?: any;
   open: boolean;
   setOpen: any;
-  allToppings: any;
+  allToppings?: Topping[];
   create: any;
+  setPizza: any;
 }
 
-const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: PizzaModalProps): JSX.Element => {
+//Form submission input
+interface PizzaFormInp {
+  id?: string;
+  name: string;
+  description: string;
+  imgSrc: string;
+  toppingIds: string[];
+}
+
+const PizzaValidationSchema = Yup.object().shape({
+  name: Yup.string().min(1, 'Too Short!').max(50, 'Too Long!').required('Pizza Name Required'),
+  description: Yup.string().min(1, 'Too Short!').max(100, 'Too Long!').required('Pizza Description Required'),
+  imgSrc: Yup.string().url().required('Pizza Image URL Required'),
+  toppingIds: Yup.array().min(1, 'Choose At Least One Topping'),
+});
+
+const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizza }: PizzaModalProps): JSX.Element => {
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
-  //Build topping checklist
-  let ToppingList = allToppings?.toppings.map((topping: Topping) => (
+  //Build topping checklist of all topping options
+  const ToppingList = allToppings?.map((topping: Topping) => (
     <label>
       <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
       {topping.name}
@@ -42,6 +60,8 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
   return (
     <Modal open={open}>
       <Box sx={style}>
+        <h1>Build Your Pizza</h1>
+
         <Formik
           initialValues={{
             id: selectedPizza?.id,
@@ -50,43 +70,45 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
             imgSrc: selectedPizza?.imgSrc,
             toppingIds: selectedPizza?.toppings.map((topping: Topping) => topping.id),
           }}
-          onSubmit={async (input): Promise<any> => {
+          validationSchema={PizzaValidationSchema}
+          onSubmit={async (pizza: PizzaFormInp) => {
             new Promise((r) => setTimeout(r, 500));
-            alert(JSON.stringify(input, null, 2));
-            if (create) onCreatePizza(input);
-            else onUpdatePizza(input);
+            alert(JSON.stringify(pizza, null, 2));
+            if (create) onCreatePizza(pizza);
+            else onUpdatePizza(pizza);
             setOpen(false);
           }}
         >
-          {({ values }): any => (
+          {({ values, errors, touched }): any => (
             <Form>
-              <Field id="name" name="name" defaultValue={values.name} placeholder="Pizza Name" />
-              <Field
-                id="description"
-                name="description"
-                defaultValue={values.description}
-                placeholder="Pizza Description"
-              />
-              <Field id="imgSrc" name="imgSrc" defaultValue={values.imgSrc} placeholder="Pizza Image Source" />
+              <Field fullWidth id="name" name="name" placeholder="Pizza Name" />
+              {errors.name && touched.name ? <div>{errors.name}</div> : null}
 
-              <div id="toppingsHeader">Toppings</div>
+              <Field fullWidth id="description" name="description" placeholder="Pizza Description" />
+              {errors.description && touched.description ? <div>{errors.description}</div> : null}
+
+              <Field fullWidth id="imgSrc" name="imgSrc" placeholder="Pizza Image URL" />
+              {errors.imgSrc && touched.imgSrc ? <div>{errors.imgSrc}</div> : null}
+
+              <h4 id="toppingsHeader">Toppings</h4>
               <div role="group" aria-labelledby="toppingsHeader">
                 {ToppingList}
               </div>
+              {errors.toppingIds && touched.toppingIds ? <div>{errors.toppingIds}</div> : null}
 
               <Button type="submit">{create ? 'Create' : 'Update'} Pizza</Button>
-              <Button
-                onClick={(): void => {
-                  if (selectedPizza) onDeletePizza(selectedPizza);
-                  setOpen(false);
-                }}
-              >
-                Delete Pizza
-              </Button>
             </Form>
           )}
         </Formik>
 
+        <Button
+          onClick={(): void => {
+            if (selectedPizza) onDeletePizza(selectedPizza);
+            setOpen(false);
+          }}
+        >
+          Delete Pizza
+        </Button>
         <Button
           onClick={(): void => {
             setOpen(false);
