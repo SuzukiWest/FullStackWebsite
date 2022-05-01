@@ -1,24 +1,29 @@
 //Type imports
 import { ObjectId, Collection } from 'mongodb';
-import { PizzaDocument, toPizzaObject, PizzaInp } from '../../../entities/pizza';
+import { PizzaDocument, toPizzaObject } from '../../../entities/pizza';
 import { ToppingProvider } from '../toppings/topping.provider';
-import { toppingProvider } from '..';
 
 //Input Types
-import { CreatePizzaInput, UpdatePizzaInput } from './pizza.provider.types';
+import { CreatePizzaInput, UpdatePizzaInput, QueryInput, GetPizzasResponse } from './pizza.provider.types';
 
 //Helper function
 import validateStringInputs from '../../../lib/string-validator';
 import { isString } from 'lodash';
+import { PizzaInp } from '../../../entities/pizza';
+import { CursorProvider } from '../cursor/cursor.provider';
 
 class PizzaProvider {
-  constructor(private collection: Collection<PizzaDocument>, private toppingProvider: ToppingProvider) {}
-
-  public async getPizzas(): Promise<PizzaInp[]> {
-    const pizzas = await this.collection.find().sort({ name: 1 }).toArray();
-    return pizzas.map(toPizzaObject);
+  constructor(
+    private collection: Collection<PizzaDocument>,
+    private toppingProvider: ToppingProvider,
+    private cursorProvider: CursorProvider
+  ) {}
+  //Queries---------------------------------------------------------------------------------------
+  public async getPizzas(input: QueryInput): Promise<GetPizzasResponse> {
+    return this.cursorProvider.getCursorResult(input, this.collection);
   }
 
+  //Mutations---------------------------------------------------------------------------------------
   public async createPizza(input: CreatePizzaInput): Promise<PizzaInp> {
     const { name, description, imgSrc, toppingIds } = input;
     const strInp = [name, description, imgSrc];

@@ -1,3 +1,5 @@
+import { PizzaInp } from 'src/entities/pizza';
+
 export interface Pizza {
   id: string;
   name: string;
@@ -20,4 +22,15 @@ export interface UpdatePizzaInput {
   description?: string | null;
   imgSrc?: string | null;
   toppingIds?: string[] | null;
+}
+
+export interface GetPizzasResponse {
+  hasNextPage: boolean;
+  cursorPosition: string;
+  totalCount: number;
+  results: PizzaInp[];
+}
+
+export interface QueryInput {
+  limit: number | null;
 }

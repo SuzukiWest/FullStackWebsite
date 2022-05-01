@@ -5,11 +5,18 @@ import {
   MutationCreatePizzaArgs,
   MutationDeletePizzaArgs,
   MutationUpdatePizzaArgs,
+  QueryPizzasArgs,
 } from '../../src/application/schema/types/schema';
 import { TestClient } from '../helpers/client.helper';
-import { createMockPizza, createMockPizzaInp, createMockTopping } from '../helpers/pizza.helper';
+import {
+  createMockPizza,
+  createMockPizzaInp,
+  createMockTopping,
+  createPizzaPage,
+  mockCursorResult,
+} from '../helpers/pizza.helper';
 import { pizzaResolver } from '../../src/application/resolvers/pizza.resolver';
-import { toppingProvider, pizzaProvider } from '../../src/application/providers';
+import { toppingProvider, pizzaProvider, cursorProvider } from '../../src/application/providers';
 
 let client: TestClient;
 
@@ -20,10 +27,23 @@ jest.mock('../../src/application/database', () => ({
 const mockTopping = createMockTopping();
 const mockPizzaInp = createMockPizzaInp({ toppingIds: [mockTopping.id] });
 const mockPizza = createMockPizza({
-  ...mockPizzaInp,
+  id: mockPizzaInp.id,
   toppings: [mockTopping],
   priceCents: mockTopping.priceCents,
 });
+const mockCursorRes = mockCursorResult({
+  hasNextPage: true,
+  cursorPosition: mockPizza.id,
+  totalCount: 1,
+  results: [mockPizzaInp],
+});
+const mockPizzaPage = createPizzaPage({
+  hasNextPage: true,
+  cursorPosition: mockPizza.id,
+  totalCount: 1,
+  results: [mockPizza],
+});
+const emptyIndex = '000000000000000000000000';
 
 beforeAll(async (): Promise<void> => {
   client = new TestClient(typeDefs, [pizzaResolver, toppingResolver]);
@@ -37,51 +57,53 @@ describe('pizzaResolver', (): void => {
   describe('Query', () => {
     describe('pizzas', () => {
       const query = gql`
-        query getPizzas {
-          pizzas {
-            id
-            name
-            description
-            imgSrc
-            toppings {
+        query ($input: QueryInput!) {
+          pizzas(input: $input) {
+            totalCount
+            hasNextPage
+            cursorPosition
+            results {
               id
               name
+              description
+              imgSrc
               priceCents
+              toppings {
+                id
+                name
+                priceCents
+              }
             }
-            priceCents
           }
         }
       `;
 
-      describe('should get all pizzas', () => {
-        beforeEach(async (): Promise<void> => {
-          jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(mockPizza.priceCents);
-          jest.spyOn(pizzaProvider, 'getPizzas').mockResolvedValue([mockPizzaInp]);
+      describe('should get a pizza', () => {
+        beforeEach(async (): Promise<void> => {});
+
+        const variables: QueryPizzasArgs = {
+          input: { limit: 1 },
+        };
+        test('should getPizza', async () => {
+          jest.spyOn(cursorProvider, 'getCursorResult').mockResolvedValue(mockCursorRes);
+
           jest.spyOn(toppingProvider, 'getToppingsByIds').mockResolvedValue(mockPizza.toppings);
-        });
-        test('should getPizzas', async () => {
+          jest.spyOn(toppingProvider, 'getPriceCents').mockResolvedValue(mockPizza.priceCents);
+
           //resolvers run here
-          const result = await client.query({ query });
+          const result = await client.query({ query, variables });
 
           expect(result.data).toEqual({
-            pizzas: [
-              {
-                __typename: 'Pizza',
-                id: mockPizza.id,
-                name: mockPizza.name,
-                description: mockPizza.description,
-                imgSrc: mockPizza.imgSrc,
-                toppings: mockPizza.toppings,
-                priceCents: mockPizza.priceCents,
-              },
-            ],
+            pizzas: {
+              __typename: 'GetPizzasResponse',
+              totalCount: mockPizzaPage.totalCount,
+              hasNextPage: mockPizzaPage.hasNextPage,
+              cursorPosition: mockPizzaPage.cursorPosition,
+              results: mockPizzaPage.results,
+            },
           });
-        });
+          expect(cursorProvider.getCursorResult).toHaveBeenCalledTimes(1);
 
-        test('should call each function once', async () => {
-          await client.query({ query });
-
-          expect(pizzaProvider.getPizzas).toHaveBeenCalledTimes(1);
           expect(toppingProvider.getToppingsByIds).toHaveBeenCalledTimes(1);
           expect(toppingProvider.getPriceCents).toHaveBeenCalledTimes(1);
         });
