@@ -78,7 +78,6 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
               <Button
                 onClick={(): void => {
                   if (selectedPizza) onDeletePizza(selectedPizza);
-
                   setOpen(false);
                 }}
               >

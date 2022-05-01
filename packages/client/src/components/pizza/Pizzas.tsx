@@ -1,7 +1,6 @@
 //React visual imports
 import React from 'react';
-import { Container, List, Theme, createStyles, Button } from '@material-ui/core';
-
+import { Container, Theme, createStyles, Button, Box, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 
@@ -75,7 +74,9 @@ const Pizzas: React.FC = () => {
   };
 
   const PizzaList = pizzaDat?.pizzas.map((pizza: Pizza) => (
-    <PizzaItem data-testid={`pizza-item-${pizza.id}`} key={pizza.id} pizza={pizza} choosePizza={choosePizza} />
+    <Grid item xs={4} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
+      <PizzaItem data-testid={`pizza-item-${pizza.id}`} pizza={pizza} choosePizza={choosePizza} />
+    </Grid>
   ));
 
   return (
@@ -88,7 +89,12 @@ const Pizzas: React.FC = () => {
         Create Pizza
       </Button>
       <PageHeader pageHeader={'Pizza'} />
-      <List data-testid={'pizza-list'}>{PizzaList}</List>
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={2}>
+          {PizzaList}
+        </Grid>
+      </Box>
 
       <PizzaModal
         selectedPizza={selectedPizza}

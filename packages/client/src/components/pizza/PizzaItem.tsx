@@ -1,8 +1,20 @@
-import { Button, ImageListItem, ListItem, ListItemText } from '@material-ui/core';
-import CardItem from '../common/CardItem';
+import {
+  ListItem,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  CardHeader,
+  List,
+  CardActionArea,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+} from '@material-ui/core';
 import { Pizza, Topping } from '../../types';
-import { List } from '@material-ui/core';
 import toDollars from '../../lib/format-dollars';
+import React from 'react';
 
 export interface PizzaItemProps {
   pizza: Pizza;
@@ -14,8 +26,8 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
 
   const listToppings = pizza.toppings.map((topping: Topping) => (
     <ListItem
-      data-testid={'pizza-toppingList-${pizza?.id}-topping-${topping.id}'}
-      key={topping.id}
+      data-testid={'pizza-toppingList-${pizza.id}-topping-${topping.id}'}
+      key={'${pizza.id}-${topping.id}'}
       value={topping.name}
     >
       {topping.name}
@@ -23,42 +35,43 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
   ));
 
   return (
-    <Button
-      onClick={(): void => {
-        choosePizza(false, pizza);
-      }}
-    >
-      <CardItem {...props}>
-        <List>
-          <ListItemText
-            primary={pizza?.name + ' Pizza'}
-            key={`pizza-name-${pizza?.name}`}
-            data-testid={`pizza-name-${pizza?.id}`}
-          />
+    <Card data-testid={'pizzaItem-test-card-${pizza.id}'} {...props}>
+      <CardActionArea data-testid={`pizza-button-${pizza.id}`} onClick={(): void => choosePizza(false, pizza)}>
+        <CardHeader
+          data-testid={`pizza-header-${pizza.id}`}
+          title={pizza.name + ' Pizza'}
+          subheader={pizza.description}
+        />
 
-          <ListItemText
-            primary={'Description:' + pizza?.description}
-            key={`pizza-description-${pizza?.description}`}
-            data-testid={`pizza-description-${pizza?.id}`}
-          />
+        <CardMedia
+          data-testid={'pizza-imgSrc-${pizza.imgSrc}'}
+          component="img"
+          height="194"
+          image={pizza?.imgSrc}
+          alt="Image missing"
+        />
 
-          <ListItemText key={`pizza-price-${pizza?.id}`}>
-            <h4 data-testid={`pizza-price-${pizza?.id}`}>Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}</h4>
-          </ListItemText>
+        <CardContent data-testid={`pizza-contentSection-${pizza.id}`}>
+          <Typography data-testid={'pizza-price-${pizza.id}'}>
+            Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
 
-          <ListItemText
-            primary="Toppings"
-            data-testid={'pizza-toppingList-Title-${pizza?.id}'}
-            key={'pizza-toppingList-Title-${pizza?.id}'}
-          />
-          {listToppings}
-
-          <ImageListItem data-testid={'pizza-imgSrc-${pizza?.imgSrc}'} key={'pizza-imgSrc-${pizza?.imgSrc}'}>
-            <img src={pizza?.imgSrc} alt={pizza?.name} width="50%" height="25%" />
-          </ImageListItem>
-        </List>
-      </CardItem>
-    </Button>
+      <Accordion data-testid={`pizza-toppingExpand-${pizza.id}`}>
+        <AccordionSummary
+          data-testid={`pizza-toppingExpandTitle-${pizza.id}`}
+          expandIcon={<Button>^</Button>}
+          aria-controls="toppingList"
+          id="toppings"
+        >
+          <Typography data-testid={'pizza-toppings-title-${pizza.id}'}>Toppings</Typography>
+        </AccordionSummary>
+        <AccordionDetails data-testid={`pizza-toppingExpandContent-${pizza.id}`}>
+          <List data-testid={'pizza-toppings-list-${pizza.id}'}>{listToppings}</List>
+        </AccordionDetails>
+      </Accordion>
+    </Card>
   );
 };
 
