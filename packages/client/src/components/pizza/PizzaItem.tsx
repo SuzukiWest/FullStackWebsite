@@ -1,20 +1,21 @@
 //MUI imports
 import {
-  List,
   ListItem,
   Typography,
   Card,
   CardContent,
   CardMedia,
+  CardHeader,
+  List,
   CardActionArea,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
-  CardHeader,
 } from '@material-ui/core';
 import { Pizza, Topping } from '../../types';
 //Helper function imports
+
 import toDollars from '../../lib/format-dollars';
 import React from 'react';
 
