@@ -1,25 +1,102 @@
-import { Modal } from '@material-ui/core';
 import * as React from 'react';
 
 import { Box } from '@material-ui/core';
-import { Button } from '@material-ui/core';
-import { Formik, Field, Form } from 'formik';
+import {
+  Modal,
+  Button,
+  Backdrop,
+  createStyles,
+  Fade,
+  IconButton,
+  makeStyles,
+  TextField,
+  Theme,
+} from '@material-ui/core';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import { Topping } from '../../types/schema';
 import usePizzaMutations from '../../hooks/pizza/use-pizza-mutations';
+import { url } from 'inspector';
+import PizzaBackground from '../../../src/assets/img/make-pizza.jpeg';
+import { inherits } from 'util';
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+/*
+export interface Theme {
+  shape: Shape;
+  breakpoints: Breakpoints;
+  direction: Direction;
+  mixins: Mixins;
+  overrides?: Overrides;
+  palette: Palette;
+  props?: ComponentsProps;
+  shadows: Shadows;
+  spacing: Spacing;
+  transitions: Transitions;
+  typography: Typography;
+  zIndex: ZIndex;
+  unstable_strictMode?: boolean;
+} */
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    box: {
+      justifyContent: 'center',
+      position: 'absolute' as 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 600,
+      border: '5px solid #000',
+      p: 4,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      alignItems: 'center',
+    },
+    title: {
+      textAlign: 'center',
+    },
+    fields: {
+      width: '100%',
+    },
+    toppingContainer: {
+      padding: '2px',
+      width: '100%',
+      height: '20%',
+      marginTop: '25px',
+    },
+    toppingList: {
+      column: '3 auto',
+      border: '2px solid #000',
+      display: 'flex',
+      width: 'auto',
+      flexWrap: 'wrap',
+      position: 'relative',
+      justifyContent: 'start',
+    },
+    toppingItem: {
+      flex: '1 0 33.33%',
+      listStyleType: 'none',
+    },
+    button: {
+      width: '100%',
+      column: '2 auto',
+      display: 'flex',
+    },
+    root: {
+      '& .MuiTextField-root': {
+        margin: theme.spacing(1),
+        width: '25ch',
+      },
+    },
+  })
+);
 
 interface PizzaModalProps {
   selectedPizza?: any;
@@ -47,21 +124,31 @@ const PizzaValidationSchema = Yup.object().shape({
 });
 
 const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizza }: PizzaModalProps): JSX.Element => {
+  const classes = useStyles();
+
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
 
   //Build topping checklist of all topping options
   const ToppingList = allToppings?.map((topping: Topping) => (
-    <label>
-      <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
-      {topping.name}
-    </label>
+    <li className={classes.toppingItem}>
+      <label>
+        <Field type="checkbox" name="toppingIds" value={topping.id} key={topping.id} />
+        {topping.name}
+      </label>
+    </li>
   ));
 
   return (
-    <Modal open={open}>
-      <Box sx={style}>
-        <h1>Build Your Pizza</h1>
-
+    <Modal
+      open={open}
+      className={classes.modal}
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Box className={classes.box}>
+        <h1 className={classes.title}>Build Your Pizza</h1>
         <Formik
           initialValues={{
             id: selectedPizza?.id,
@@ -78,44 +165,58 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizz
             else onUpdatePizza(pizza);
             setOpen(false);
           }}
-        >
-          {({ values, errors, touched }): any => (
+          render={({ values }): any => (
             <Form>
-              <Field fullWidth id="name" name="name" placeholder="Pizza Name" />
-              {errors.name && touched.name ? <div>{errors.name}</div> : null}
-
-              <Field fullWidth id="description" name="description" placeholder="Pizza Description" />
-              {errors.description && touched.description ? <div>{errors.description}</div> : null}
-
-              <Field fullWidth id="imgSrc" name="imgSrc" placeholder="Pizza Image URL" />
-              {errors.imgSrc && touched.imgSrc ? <div>{errors.imgSrc}</div> : null}
-
-              <h4 id="toppingsHeader">Toppings</h4>
-              <div role="group" aria-labelledby="toppingsHeader">
-                {ToppingList}
+              <div>
+                Pizza Name
+                <Field className={classes.fields} label="Pizza Name" id="name" name="name" placeholder="Pizza Name" />
+                <ErrorMessage name="name" />
               </div>
-              {errors.toppingIds && touched.toppingIds ? <div>{errors.toppingIds}</div> : null}
 
-              <Button type="submit">{create ? 'Create' : 'Update'} Pizza</Button>
+              <div>
+                Description
+                <Field className={classes.fields} id="description" name="description" placeholder="Pizza Description" />
+                <ErrorMessage name="description" />
+              </div>
+
+              <div>
+                Image
+                <Field className={classes.fields} id="imgSrc" name="imgSrc" placeholder="Pizza Image URL" />
+                <ErrorMessage name="imgSrc" />
+              </div>
+
+              <div className={classes.toppingContainer} role="group" aria-labelledby="toppingsHeader">
+                Toppings
+                <ul className={classes.toppingList}>{ToppingList}</ul>
+              </div>
+              <ErrorMessage name="toppingIds" />
+
+              <Button fullWidth type="submit">
+                {create ? 'Create' : 'Update'} Pizza
+              </Button>
             </Form>
           )}
-        </Formik>
+        />
 
-        <Button
-          onClick={(): void => {
-            if (selectedPizza) onDeletePizza(selectedPizza);
-            setOpen(false);
-          }}
-        >
-          Delete Pizza
-        </Button>
-        <Button
-          onClick={(): void => {
-            setOpen(false);
-          }}
-        >
-          Close Pizza Modal
-        </Button>
+        <div className={classes.button}>
+          <Button
+            fullWidth
+            onClick={(): void => {
+              if (selectedPizza) onDeletePizza(selectedPizza);
+              setOpen(false);
+            }}
+          >
+            Delete Pizza
+          </Button>
+          <Button
+            fullWidth
+            onClick={(): void => {
+              setOpen(false);
+            }}
+          >
+            Close Pizza Modal
+          </Button>
+        </div>
       </Box>
     </Modal>
   );
