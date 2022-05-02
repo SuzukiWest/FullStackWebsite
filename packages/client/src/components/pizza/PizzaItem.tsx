@@ -48,7 +48,7 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
         />
         <CardContent data-testid={`pizza-contentSection-${pizza.id}`}>
           Description
-          <Typography data-testid={'pizza-price-${pizza.id}'} noWrap>
+          <Typography data-testid={'pizza-description-${pizza.id}'} noWrap>
             {pizza.description}
           </Typography>
           <CardMedia
