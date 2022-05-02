@@ -1,3 +1,6 @@
+import React from 'react';
+import { Pizza, Topping } from '../../types';
+
 //MUI imports
 import {
   ListItem,
@@ -13,12 +16,9 @@ import {
   AccordionSummary,
   Button,
 } from '@material-ui/core';
-import { Pizza, Topping } from '../../types';
-//Helper function imports
 
+//Helper function imports
 import toDollars from '../../lib/format-dollars';
-import React from 'react';
-import { classicNameResolver } from 'typescript';
 
 export interface PizzaItemProps {
   pizza: Pizza;

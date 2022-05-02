@@ -1,6 +1,6 @@
 //React imports
 import React from 'react';
-import { Container, Theme, createStyles, Button, Box, Grid } from '@material-ui/core';
+import { Container, Theme, createStyles, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import PageHeader from '../common/PageHeader';
 
@@ -31,7 +31,7 @@ const useStyles = makeStyles(({ typography }: Theme) =>
     },
     fetch: {
       display: 'flex',
-      marginTop: '25px',
+      marginBottom: '25px',
       border: '2px solid #000',
     },
     name: {
