@@ -126,7 +126,8 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: Pizza
           validationSchema={PizzaValidationSchema}
           onSubmit={async (pizza: PizzaFormInp) => {
             new Promise((r) => setTimeout(r, 500));
-            alert(JSON.stringify(pizza, null, 2));
+            //JSON message for checking submission results
+            //alert(JSON.stringify(pizza, null, 2));
             if (create) onCreatePizza(pizza);
             else onUpdatePizza(pizza);
             setOpen(false);
