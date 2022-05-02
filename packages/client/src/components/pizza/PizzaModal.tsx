@@ -1,42 +1,12 @@
 import * as React from 'react';
 
 import { Box } from '@material-ui/core';
-import {
-  Modal,
-  Button,
-  Backdrop,
-  createStyles,
-  Fade,
-  IconButton,
-  makeStyles,
-  TextField,
-  Theme,
-} from '@material-ui/core';
+import { Modal, Button, Backdrop, createStyles, makeStyles, Theme } from '@material-ui/core';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
 import { Topping } from '../../types/schema';
 import usePizzaMutations from '../../hooks/pizza/use-pizza-mutations';
-import { url } from 'inspector';
-import PizzaBackground from '../../../src/assets/img/make-pizza.jpeg';
-import { inherits } from 'util';
-
-/*
-export interface Theme {
-  shape: Shape;
-  breakpoints: Breakpoints;
-  direction: Direction;
-  mixins: Mixins;
-  overrides?: Overrides;
-  palette: Palette;
-  props?: ComponentsProps;
-  shadows: Shadows;
-  spacing: Spacing;
-  transitions: Transitions;
-  typography: Typography;
-  zIndex: ZIndex;
-  unstable_strictMode?: boolean;
-} */
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -117,13 +87,16 @@ interface PizzaFormInp {
 }
 
 const PizzaValidationSchema = Yup.object().shape({
-  name: Yup.string().min(1, 'Too Short!').max(50, 'Too Long!').required('Pizza Name Required'),
-  description: Yup.string().min(1, 'Too Short!').max(100, 'Too Long!').required('Pizza Description Required'),
+  name: Yup.string().min(1, 'Name Too Short!').max(50, 'Name Too Long!').required('Pizza Name Required'),
+  description: Yup.string()
+    .min(1, 'Description Too Short!')
+    .max(100, 'Description Too Long!')
+    .required('Pizza Description Required'),
   imgSrc: Yup.string().url().required('Pizza Image URL Required'),
   toppingIds: Yup.array().min(1, 'Choose At Least One Topping'),
 });
 
-const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizza }: PizzaModalProps): JSX.Element => {
+const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings }: PizzaModalProps): JSX.Element => {
   const classes = useStyles();
 
   const { onCreatePizza, onDeletePizza, onUpdatePizza } = usePizzaMutations();
@@ -139,14 +112,7 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizz
   ));
 
   return (
-    <Modal
-      open={open}
-      className={classes.modal}
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
+    <Modal open={open} className={classes.modal} BackdropComponent={Backdrop}>
       <Box className={classes.box}>
         <h1 className={classes.title}>Build Your Pizza</h1>
         <Formik
@@ -165,7 +131,7 @@ const PizzaModal = ({ selectedPizza, open, setOpen, create, allToppings, setPizz
             else onUpdatePizza(pizza);
             setOpen(false);
           }}
-          render={({ values }): any => (
+          render={({}): any => (
             <Form>
               <div>
                 Pizza Name
