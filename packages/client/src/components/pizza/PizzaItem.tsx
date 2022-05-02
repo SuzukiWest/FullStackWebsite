@@ -18,6 +18,7 @@ import { Pizza, Topping } from '../../types';
 
 import toDollars from '../../lib/format-dollars';
 import React from 'react';
+import { classicNameResolver } from 'typescript';
 
 export interface PizzaItemProps {
   pizza: Pizza;
@@ -43,18 +44,20 @@ const PizzaItem: React.FC<PizzaItemProps> = ({ pizza, choosePizza, ...props }: P
         <CardHeader
           data-testid={`pizza-header-${pizza.id}`}
           title={pizza.name + ' Pizza'}
-          subheader={pizza.description}
+          titleTypographyProps={{ noWrap: true }}
         />
-
-        <CardMedia
-          data-testid={'pizza-imgSrc-${pizza.imgSrc}'}
-          component="img"
-          height="194"
-          image={pizza?.imgSrc}
-          alt="Image missing"
-        />
-
         <CardContent data-testid={`pizza-contentSection-${pizza.id}`}>
+          Description
+          <Typography data-testid={'pizza-price-${pizza.id}'} noWrap>
+            {pizza.description}
+          </Typography>
+          <CardMedia
+            data-testid={'pizza-imgSrc-${pizza.imgSrc}'}
+            component="img"
+            height="194"
+            image={pizza?.imgSrc}
+            alt="Image missing"
+          />
           <Typography data-testid={'pizza-price-${pizza.id}'}>
             Price: {pizzaPrice ? toDollars(pizzaPrice) : ''}
           </Typography>

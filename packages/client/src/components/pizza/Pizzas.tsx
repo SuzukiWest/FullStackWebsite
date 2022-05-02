@@ -26,10 +26,23 @@ const useStyles = makeStyles(({ typography }: Theme) =>
     },
     header: {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
+      columns: '2 auto',
+    },
+    fetch: {
+      display: 'flex',
+      marginTop: '25px',
+      border: '2px solid #000',
     },
     name: {
       minWidth: typography.pxToRem(500),
+    },
+    gridContainer: {
+      gridAutoRows: '1fr',
+      minWidth: typography.pxToRem(650),
+    },
+    gridItem: {
+      maxHeight: '1fr',
     },
   })
 );
@@ -89,38 +102,41 @@ const Pizzas: React.FC = () => {
   };
 
   const PizzaList = pizzaDat?.page.results.map((pizza: Pizza) => (
-    <Grid item xs={4} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
+    <Grid item xs={4} className={classes.gridItem} data-testid={'pizza-griditem-${pizza.id}'} key={pizza.id}>
       <PizzaItem data-testid={`pizza-item-${pizza.id}`} pizza={pizza} choosePizza={choosePizza} />
     </Grid>
   ));
 
   return (
     <Container maxWidth="md">
-      <Button
-        data-testid={'pizza-createButton'}
-        onClick={(): void => {
-          choosePizza(true, undefined);
-        }}
-      >
-        Create Pizza
-      </Button>
-      <PageHeader pageHeader={'Pizza'} />
+      <div className={classes.header}>
+        <PageHeader pageHeader={'Pizza'} />
+        <Button
+          data-testid={'pizza-createButton'}
+          onClick={(): void => {
+            choosePizza(true, undefined);
+          }}
+        >
+          <h3>Create Pizza</h3>
+        </Button>
+      </div>
 
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          {PizzaList}
-        </Grid>
-      </Box>
+      <div className={classes.fetch}>
+        <Button
+          fullWidth
+          data-testid={'pizza-getPage'}
+          onClick={(): void => {
+            incPage();
+            refetch();
+          }}
+        >
+          {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
+        </Button>
+      </div>
 
-      <Button
-        data-testid={'pizza-getPage'}
-        onClick={(): void => {
-          incPage();
-          refetch();
-        }}
-      >
-        {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
-      </Button>
+      <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
+        {PizzaList}
+      </Grid>
 
       <PizzaModal
         selectedPizza={selectedPizza}
