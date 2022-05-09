@@ -14,8 +14,16 @@ import { useQuery } from '@apollo/client';
 import { GET_TOPPINGS } from '../../hooks/graphql/topping/queries/get-toppings';
 import { GET_PIZZA_PAGE } from '../../hooks/graphql/pizza/queries/get-pizza-page';
 
+//Import Image
+import BackgroundImage from '../../../src/assets/img/background.jpeg';
+
 const useStyles = makeStyles(({ typography }: Theme) =>
   createStyles({
+    background: {
+      backgroundImage: `url(${BackgroundImage})`,
+      backgroundRepeat: 'vertical',
+      backgroundSize: 'auto',
+    },
     container: {
       minWidth: typography.pxToRem(650),
     },
@@ -65,7 +73,7 @@ const Pizzas: React.FC = () => {
     else setPage(1);
   };
   //Number of pizzas per page
-  const limit = 3;
+  const limit = 6;
 
   const {
     loading: pizzaLoad,
@@ -108,45 +116,47 @@ const Pizzas: React.FC = () => {
   ));
 
   return (
-    <Container maxWidth="md">
-      <div className={classes.header}>
-        <PageHeader pageHeader={'Pizza'} />
-        <Button
-          data-testid={'pizza-createButton'}
-          onClick={(): void => {
-            choosePizza(true, undefined);
-          }}
-        >
-          <h3>Create Pizza</h3>
-        </Button>
-      </div>
+    <div className={classes.background}>
+      <Container className={classes.container} maxWidth="md">
+        <div className={classes.header}>
+          <PageHeader pageHeader={'Pizza'} />
+          <Button
+            data-testid={'pizza-createButton'}
+            onClick={(): void => {
+              choosePizza(true, undefined);
+            }}
+          >
+            <h3>Create Pizza</h3>
+          </Button>
+        </div>
 
-      <div className={classes.fetch}>
-        <Button
-          fullWidth
-          data-testid={'pizza-getPage'}
-          onClick={(): void => {
-            incPage();
-            refetch();
-          }}
-        >
-          {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
-        </Button>
-      </div>
+        <div className={classes.fetch}>
+          <Button
+            fullWidth
+            data-testid={'pizza-getPage'}
+            onClick={(): void => {
+              incPage();
+              refetch();
+            }}
+          >
+            {pizzaDat?.page.hasNextPage ? 'More Pizzas' : 'Reset Pizzas'} Page: {page}
+          </Button>
+        </div>
 
-      <Grid className={classes.gridContainer} wrap="nowrap" container spacing={2}>
-        {PizzaList}
-      </Grid>
+        <Grid className={classes.gridContainer} container spacing={2}>
+          {PizzaList}
+        </Grid>
 
-      <PizzaModal
-        selectedPizza={selectedPizza}
-        open={open}
-        setOpen={setOpen}
-        allToppings={toppingDat?.toppings}
-        create={create}
-        setPizza={setSelectedPizza}
-      />
-    </Container>
+        <PizzaModal
+          selectedPizza={selectedPizza}
+          open={open}
+          setOpen={setOpen}
+          allToppings={toppingDat?.toppings}
+          create={create}
+          setPizza={setSelectedPizza}
+        />
+      </Container>
+    </div>
   );
 };
 
